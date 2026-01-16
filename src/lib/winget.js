@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 /**
  * Retrieves a list of package IDs that can be updated via winget
@@ -70,68 +70,44 @@ export async function runUpdates(ids) {
   for (const id of ids) {
     console.log(`Updating package: ${id}`);
     // prettier-ignore
-    execWinget([
-      'upgrade',
-      '-i',
-      '--id',
-      id,
-      '--accept-source-agreements',
-      '--accept-package-agreements'
-    ], { inheritStdio: true })
-      .then(() => {
-        console.log(`Package ${id} updated successfully.`);
-      },
-      (err) => {
-        console.error(`Failed to update package ${id}: ${err.message}`);
-      });
+    try {
+      execWinget([
+        'upgrade',
+        '-i',
+        '--id',
+        id,
+        '--accept-source-agreements',
+        '--accept-package-agreements'
+      ], { inheritStdio: true });
+      console.log(`Package ${id} updated successfully.`);
+    } catch (err) {
+      console.error(`Failed to update package ${id}: ${err.message}`);
+    }
   }
 }
 
 /**
- * Executes winget command and returns stdout
+ * Synchronously executes winget command and returns stdout
  * @param {string[]} args - Command arguments
  * @param {Object} options - Execution options
  * @param {boolean} options.inheritStdio - Whether to inherit stdio
- * @returns {Promise<string>} Command output
+ * @returns {string} Command stdout
  * @throws {Error} If command fails
  */
 function execWinget(args, { inheritStdio = false } = {}) {
-  return new Promise((resolve, reject) => {
-    const stdio = inheritStdio ? 'inherit' : 'pipe';
-    const child = spawn('winget', args, { shell: false, stdio });
+  const stdio = inheritStdio ? 'inherit' : 'pipe';
+  const child = spawnSync('winget', args, { shell: false, stdio, encoding : 'utf8' });
 
-    if (inheritStdio) {
-      child.on('close', (code) => {
-        if (code !== 0) {
-          reject(new Error(`winget exited with code ${code}`));
-        } else {
-          resolve('');
-        }
-      });
-      return;
-    }
+  const stdout = child.stdout || '';
+  const stderr = child.stderr || '';
 
-    let stdout = '';
-    let stderr = '';
+  if (child.error) {
+    throw new Error(`Failed to execute winget: ${child.error.message}`);
+  }
 
-    child.stdout?.on('data', (data) => {
-      stdout += data.toString();
-    });
+  if (child.status !== 0) {
+    throw new Error(`winget exited with code ${child.status}${stderr ? `: ${stderr}` : ''}`);
+  }
 
-    child.stderr?.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    child.on('error', (err) => {
-      reject(new Error(`Failed to execute winget: ${err.message}`));
-    });
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`winget exited with code ${code}${stderr ? `: ${stderr}` : ''}`));
-      } else {
-        resolve(stdout);
-      }
-    });
-  });
+  return stdout;
 }
