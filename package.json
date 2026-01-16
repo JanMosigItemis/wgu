@@ -8,12 +8,27 @@
     "wgu": "src/cli.js"
   },
   "scripts": {
-    "start": "node src/cli.js"
+    "start": "node src/cli.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
-  "keywords": ["winget", "update", "windows", "cli"],
+  "keywords": [
+    "winget",
+    "update",
+    "windows",
+    "cli"
+  ],
   "author": "Jan Mosig",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.17.0",
+    "eslint": "9.17.0",
+    "eslint-config-prettier": "9.1.0",
+    "prettier": "3.2.5"
   }
 }

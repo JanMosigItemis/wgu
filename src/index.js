@@ -11,7 +11,7 @@ const VERSION = '0.0.1';
  * @param {NodeJS.ReadStream} options.stdin - Input stream
  * @returns {Promise<number>} Exit code
  */
-export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin } = {}) {
+export async function main({ stdout = process.stdout, stderr = process.stderr, _stdin = process.stdin } = {}) {
   try {
     // Set cursor to underline
     stdout.write('\x1b[4 q');

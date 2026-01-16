@@ -25,7 +25,7 @@ export async function getUpdateCandidateIds() {
     .map((line) => line.trim());
 
   const outputLineCount = lines.length;
-  const tableHeaderIndex = lines.findIndex((line) => line.match(tableHeaderRegex) != null);
+  const tableHeaderIndex = lines.findIndex((line) => line.match(tableHeaderRegex) !== null);
   if (tableHeaderIndex === -1) {
     throw new Error('Could not find table header in winget output');
   }
@@ -69,14 +69,21 @@ export async function getUpdateCandidateIds() {
 export async function runUpdates(ids) {
   for (const id of ids) {
     console.log(`Updating package: ${id}`);
-    /*await execWinget([
+    // prettier-ignore
+    execWinget([
       'upgrade',
       '-i',
-      '--id', id,
+      '--id',
+      id,
       '--accept-source-agreements',
       '--accept-package-agreements'
-    ], { inheritStdio: true });*/
-    console.log(`Package ${id} updated successfully.`);
+    ], { inheritStdio: true })
+      .then(() => {
+        console.log(`Package ${id} updated successfully.`);
+      },
+      (err) => {
+        console.error(`Failed to update package ${id}: ${err.message}`);
+      });
   }
 }
 
@@ -121,7 +128,7 @@ function execWinget(args, { inheritStdio = false } = {}) {
 
     child.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`winget exited with code ${code}${stderr ? ': ' + stderr : ''}`));
+        reject(new Error(`winget exited with code ${code}${stderr ? `: ${stderr}` : ''}`));
       } else {
         resolve(stdout);
       }

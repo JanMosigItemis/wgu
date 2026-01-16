@@ -32,7 +32,7 @@ export async function interactiveSelect(items) {
     return [];
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const selectedLines = new Map();
     let activeLine = 0;
     const explanatoryLineCount = 2;

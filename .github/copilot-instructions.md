@@ -21,12 +21,14 @@
 - When refering to lines of code from context then always show the line number for clarity.
 
 ## Target Environment
+
 - Build a **command-line application** intended to run on **Windows**.
 - Use **Node.js LTS** on Windows.
 - Use **ESM** (`"type": "module"`). Do not introduce CommonJS (`require`, `module.exports`).
 - Prefer Node built-ins over dependencies (e.g., `node:fs`, `node:path`, `node:child_process`, `node:readline`, `node:os`).
 
 ### Windows + CMD conventions (preferred shell)
+
 - Assume **CMD.EXE** as the primary shell environment for documentation and examples.
 - When providing usage examples, use **CMD syntax** (e.g., `%VAR%` for env vars), not PowerShell syntax (e.g., `$env:VAR`).
 - When spawning subprocesses:
@@ -44,6 +46,7 @@
   - Treat all input (args, env vars, stdin, files) as untrusted; validate and sanitize.
 
 ## Coding Standards
+
 - Use modern JavaScript (ES2022+ features available in Node LTS).
 - Prefer `const` / `let`; never use `var`.
 - Prefer small, pure functions; avoid hidden side effects.
@@ -61,6 +64,7 @@
   - Prefer strict equality `===` / `!==`.
 
 ## Structural Preferences
+
 - Organize code so the CLI entrypoint is thin and delegates to library functions.
 - Suggested layout (adjust to the repo’s existing structure):
   - `src/cli.js` — argument parsing, help text, exit codes
@@ -72,6 +76,7 @@
 - Avoid deep inheritance; prefer composition and plain objects.
 
 ## Documentation & Commenting
+
 - Prefer self-explanatory code and clear naming over heavy commenting.
 - Add comments only when they explain **why** (tradeoffs, constraints), not **what**.
 - Use JSDoc for public functions/modules and for non-obvious parameter/return shapes:
