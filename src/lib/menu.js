@@ -1,0 +1,125 @@
+import * as readline from 'node:readline';
+
+/**
+ * Move cursor to start of line (after checkbox position)
+ */
+function moveCursorToStartOfLine() {
+  process.stdout.write('\r');
+  process.stdout.write('\x1b[1C'); // Move right 1 column
+}
+
+/**
+ * Move the cursor to the specified index (0-based)
+ * @param {number} current - Current index
+ * @param {number} target - Target index
+ */
+function moveCursor(current, target) {
+  if (target < current) {
+    process.stdout.write(`\x1b[${current - target}A`); // Move up
+  } else if (target > current) {
+    process.stdout.write(`\x1b[${target - current}B`); // Move down
+  }
+  moveCursorToStartOfLine();
+}
+
+/**
+ * Displays an interactive menu for selecting items from a list
+ * @param {string[]} items - List of items to display
+ * @returns {Promise<string[]>} Selected items, or empty array if user quits
+ */
+export async function interactiveSelect(items) {
+  if (!items || items.length === 0) {
+    return [];
+  }
+
+  return new Promise((resolve, reject) => {
+    const selectedLines = new Map();
+    let activeLine = 0;
+    const explanatoryLineCount = 2;
+
+    // Display initial menu
+    for (const item of items) {
+      console.log(`[ ] ${item}`);
+    }
+    console.log('');
+    console.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
+
+    // Move cursor up to the first item
+    process.stdout.write(`\x1b[${items.length + explanatoryLineCount}A`);
+    moveCursorToStartOfLine();
+
+    // Set up raw mode for keypress detection
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+    readline.emitKeypressEvents(process.stdin);
+
+    const onKeypress = (str, key) => {
+      // Handle Ctrl+C and Ctrl+D
+      if (key && key.ctrl && key.name === 'c') {
+        cleanup();
+        process.exit(0);
+        return;
+      }
+
+      if (key && key.ctrl && key.name === 'd') {
+        cleanup();
+        resolve([]);
+        return;
+      }
+
+      // Handle arrow keys
+      if (key && key.name === 'up') {
+        if (activeLine > 0) {
+          moveCursor(activeLine, activeLine - 1);
+          activeLine--;
+        }
+      } else if (key && key.name === 'down') {
+        if (activeLine < items.length - 1) {
+          moveCursor(activeLine, activeLine + 1);
+          activeLine++;
+        }
+      } else if (str === ' ') {
+        // Toggle selection
+        if (selectedLines.has(activeLine)) {
+          selectedLines.delete(activeLine);
+          process.stdout.write('\r[ ]');
+        } else {
+          selectedLines.set(activeLine, true);
+          process.stdout.write('\r[x]');
+        }
+        moveCursorToStartOfLine();
+      } else if (str === 'y' || str === 'Y') {
+        // Confirm selection
+        cleanup();
+
+        // Move to one line below the end of the list
+        moveCursor(activeLine, items.length + explanatoryLineCount);
+        process.stdout.write('\r');
+
+        // Sort selected line numbers and get corresponding items
+        const selectedIndices = Array.from(selectedLines.keys()).sort((a, b) => a - b);
+        const selectedItems = selectedIndices.map((idx) => items[idx]);
+        resolve(selectedItems);
+      } else if (str === 'q' || str === 'Q' || (key && key.name === 'escape')) {
+        // Quit without selection
+        cleanup();
+
+        // Move to one line below the end of the list
+        moveCursor(activeLine, items.length + explanatoryLineCount);
+        process.stdout.write('\r');
+
+        resolve([]);
+      }
+    };
+
+    const cleanup = () => {
+      process.stdin.removeListener('keypress', onKeypress);
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(false);
+      }
+    };
+
+    process.stdin.on('keypress', onKeypress);
+  });
+}

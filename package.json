@@ -1,0 +1,19 @@
+{
+  "name": "wgu",
+  "version": "0.0.1",
+  "description": "Winget update on steroids",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "wgu": "src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js"
+  },
+  "keywords": ["winget", "update", "windows", "cli"],
+  "author": "Jan Mosig",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
