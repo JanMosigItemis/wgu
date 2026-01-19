@@ -1,6 +1,6 @@
 {
   "name": "win-get-updates",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Third party CLI frontend for winget update runs.",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node src/cli.js",
-    "version:gen": "node -p \"'const WGU_VERSION = \"' + require('./package.json').version + '\";\\nexport default WGU_VERSION;'\" > src/lib/version.js",
+    "version:gen": "node -p \"'const WGU_VERSION = \\'' + require('./package.json').version + '\\';\\nexport default WGU_VERSION;'\" > src/lib/version.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",

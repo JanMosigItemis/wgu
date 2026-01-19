@@ -1,3 +1,2 @@
-const WGU_VERSION = '0.0.1';
-
+const WGU_VERSION = '0.0.2';
 export default WGU_VERSION;
