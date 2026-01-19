@@ -1,11 +1,15 @@
 name: Lint and Format
+run-name: Lint and Format ${{ github.run_number }}
+
 on:
   push:
-    branches: ['**']
+    branches:
+      - develop
   pull_request:
-    branches: ['**']
+
 permissions:
   contents: read
+
 jobs:
   lint-and-format:
     name: Lint and Format
