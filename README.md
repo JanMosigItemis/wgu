@@ -1,6 +1,6 @@
-# wgu
+# win-get-updates
 
-CLI frontend for Winget update runs. It lets you interactively choose which package to install.
+Third party CLI frontend for [winget](https://en.wikipedia.org/wiki/Windows_Package_Manager) update runs. It lets you interactively choose which package to install.
 
 ## Requirements
 

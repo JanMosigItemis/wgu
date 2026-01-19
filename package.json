@@ -1,7 +1,15 @@
 {
-  "name": "wgu",
+  "name": "win-get-updates",
   "version": "0.0.1",
-  "description": "Winget update on steroids",
+  "description": "Third party CLI frontend for winget update runs.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanMosigItemis/wgu.git"
+  },
+  "homepage": "https://github.com/JanMosigItemis/wgu",
+  "bugs": {
+    "url": "https://github.com/JanMosigItemis/wgu/issues"
+  },
   "type": "module",
   "main": "src/index.js",
   "bin": {
@@ -24,7 +32,8 @@
   "author": "Jan Mosig",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=11.5.1"
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
