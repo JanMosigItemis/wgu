@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { main } from './index.js';
-import WGU_VERSION from './version.js';
+import WGU_VERSION from './lib/version.js';
 
 const HELP_TEXT = `
 wgu - Winget update on steroids

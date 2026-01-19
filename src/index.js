@@ -1,6 +1,8 @@
 import { getUpdateCandidateIds, runUpdates } from './lib/winget.js';
 import { interactiveSelect } from './lib/menu.js';
-import WGU_VERSION from './version.js';
+import WGU_VERSION from './lib/version.js';
+import { askPermissionToContinue } from './lib/console_commons.js';
+import { assertWindows, assertWingetAvailable } from './lib/os.js';
 
 /**
  * Main application logic
@@ -10,6 +12,9 @@ import WGU_VERSION from './version.js';
  * @returns {Promise<number>} Exit code
  */
 export async function main({ stdout = process.stdout, stderr = process.stderr } = {}) {
+  assertWindows();
+  assertWingetAvailable();
+
   try {
     // Set cursor to underline
     stdout.write('\x1b[4 q');
@@ -31,7 +36,7 @@ export async function main({ stdout = process.stdout, stderr = process.stderr } 
     const candidateIds = getUpdateCandidateIds();
 
     if (candidateIds.length === 0) {
-      console.log('No packages available for update.');
+      console.log('No packages available to update.');
       return 0;
     }
 
@@ -43,7 +48,10 @@ export async function main({ stdout = process.stdout, stderr = process.stderr } 
     }
 
     console.log('Ok, running updates..');
-    await runUpdates(selectedIds);
+    await runUpdates(selectedIds, async (id, err) => {
+      console.error(`Failed to update package ${id}: ${err.message}`);
+      return askPermissionToContinue();
+    });
 
     return 0;
   } catch (err) {

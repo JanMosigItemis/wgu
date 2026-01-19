@@ -1,28 +1,7 @@
 import * as readline from 'node:readline';
+import { moveCursorToStartOfLine, moveCursor, MOVE_UP, CARRIAGE_RETURN } from './console_commons.js';
 
 const EXPLANATORY_LINE_COUNT = 2;
-
-/**
- * Move cursor to start of line (after checkbox position)
- */
-function moveCursorToStartOfLine() {
-  process.stdout.write('\r');
-  process.stdout.write('\x1b[1C'); // Move right 1 column
-}
-
-/**
- * Move the cursor to the specified index (0-based)
- * @param {number} current - Current index
- * @param {number} target - Target index
- */
-function moveCursor(current, target) {
-  if (target < current) {
-    process.stdout.write(`\x1b[${current - target}A`); // Move up
-  } else if (target > current) {
-    process.stdout.write(`\x1b[${target - current}B`); // Move down
-  }
-  moveCursorToStartOfLine();
-}
 
 /**
  * Displays an interactive menu for selecting items from a list
@@ -46,7 +25,7 @@ export async function interactiveSelect(items) {
     console.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
 
     // Move cursor up to the first item
-    process.stdout.write(`\x1b[${items.length + EXPLANATORY_LINE_COUNT}A`);
+    process.stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));
     moveCursorToStartOfLine();
 
     // Set up raw mode for keypress detection
@@ -59,8 +38,7 @@ export async function interactiveSelect(items) {
       // Handle Ctrl+C and Ctrl+D
       if (key && key.ctrl && key.name === 'c') {
         cleanup();
-        process.exit(0);
-        return;
+        process.exit(1);
       }
 
       if (key && key.ctrl && key.name === 'd') {
@@ -84,10 +62,10 @@ export async function interactiveSelect(items) {
         // Toggle selection
         if (selectedLines.has(activeLine)) {
           selectedLines.delete(activeLine);
-          process.stdout.write('\r[ ]');
+          process.stdout.write(`${CARRIAGE_RETURN}[ ]`);
         } else {
           selectedLines.set(activeLine, true);
-          process.stdout.write('\r[x]');
+          process.stdout.write(`${CARRIAGE_RETURN}[x]`);
         }
         moveCursorToStartOfLine();
       } else if (str === 'y' || str === 'Y') {
@@ -96,7 +74,7 @@ export async function interactiveSelect(items) {
 
         // Move to one line below the end of the list
         moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
-        process.stdout.write('\r');
+        process.stdout.write(CARRIAGE_RETURN);
 
         // Sort selected line numbers and get corresponding items
         const selectedIndices = Array.from(selectedLines.keys()).sort((a, b) => a - b);
@@ -108,7 +86,7 @@ export async function interactiveSelect(items) {
 
         // Move to one line below the end of the list
         moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
-        process.stdout.write('\r');
+        process.stdout.write(CARRIAGE_RETURN);
 
         resolve([]);
       }

@@ -18,10 +18,10 @@ export function getUpdateCandidateIds() {
     throw new Error('winget update command failed or returned empty output');
   }
 
-  // Remove last line (summary info)
+  // Remove last 2 lines (summary info + newline)
   const lines = wgOutput
     .split('\n')
-    .slice(0, -1)
+    .slice(0, -2)
     .map((line) => line.trim());
 
   const outputLineCount = lines.length;
@@ -45,7 +45,7 @@ export function getUpdateCandidateIds() {
   const packageIds = [];
 
   // Extract package IDs from each line
-  for (let i = packageListStartLineIndex; i < outputLineCount - 1; i++) {
+  for (let i = packageListStartLineIndex; i < outputLineCount; i++) {
     const line = lines[i];
     if (!line || line.trim().length === 0) {
       continue;
@@ -66,7 +66,7 @@ export function getUpdateCandidateIds() {
  * @param {string[]} ids - Package IDs to update
  * @returns {Promise<void>}
  */
-export async function runUpdates(ids) {
+export async function runUpdates(ids, errorHandler = async (_id, _err) => false) {
   for (const id of ids) {
     console.log(`Updating package: ${id}`);
     // prettier-ignore
@@ -81,7 +81,10 @@ export async function runUpdates(ids) {
       ], { inheritStdio: true });
       console.log(`Package ${id} updated successfully.`);
     } catch (err) {
-      console.error(`Failed to update package ${id}: ${err.message}`);
+      // eslint-disable-next-line no-await-in-loop
+      if (!(await errorHandler(id, err))) {
+        throw err;
+      }
     }
   }
 }

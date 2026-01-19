@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node src/cli.js",
-    "version:gen": "node -p \"'const WGU_VERSION = \"' + require('./package.json').version + '\";\\nexport default WGU_VERSION;'\" > src/version.js",
+    "version:gen": "node -p \"'const WGU_VERSION = \"' + require('./package.json').version + '\";\\nexport default WGU_VERSION;'\" > src/lib/version.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",
