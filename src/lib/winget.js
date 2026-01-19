@@ -2,17 +2,17 @@ import { spawnSync } from 'node:child_process';
 
 /**
  * Retrieves a list of package IDs that can be updated via winget
- * @returns {Promise<string[]>} Array of package IDs
+ * @returns {string[]} Array of package IDs
  * @throws {Error} If winget command fails or returns empty output
  */
-export async function getUpdateCandidateIds() {
+export function getUpdateCandidateIds() {
   const NAME_COL = 'Name';
   const ID_COL = 'ID';
   const VERSION_COL = 'Version';
   const tableHeaderRegex = new RegExp(`.*${NAME_COL}\\s+${ID_COL}\\s+${VERSION_COL}.*`);
 
   // Get winget upgrade list
-  const wgOutput = await execWinget(['upgrade', '--include-unknown']);
+  const wgOutput = execWinget(['upgrade', '--include-unknown']);
 
   if (!wgOutput || wgOutput.trim().length === 0) {
     throw new Error('winget update command failed or returned empty output');

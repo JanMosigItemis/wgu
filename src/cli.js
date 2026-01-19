@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { main } from './index.js';
+import WGU_VERSION from './version.js';
 
 const HELP_TEXT = `
 wgu - Winget update on steroids
@@ -21,8 +22,6 @@ EXAMPLES:
   wgu --help       Display help
   wgu --version    Show version
 `;
-
-const VERSION = '0.0.1';
 
 /**
  * Parse command line arguments
@@ -65,7 +64,7 @@ async function cli() {
   }
 
   if (parsed.version) {
-    console.log(`wgu v${VERSION}`);
+    console.log(`wgu v${WGU_VERSION}`);
     process.exit(0);
   }
 

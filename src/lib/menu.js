@@ -1,5 +1,7 @@
 import * as readline from 'node:readline';
 
+const EXPLANATORY_LINE_COUNT = 2;
+
 /**
  * Move cursor to start of line (after checkbox position)
  */
@@ -35,7 +37,6 @@ export async function interactiveSelect(items) {
   return new Promise((resolve, _reject) => {
     const selectedLines = new Map();
     let activeLine = 0;
-    const explanatoryLineCount = 2;
 
     // Display initial menu
     for (const item of items) {
@@ -45,7 +46,7 @@ export async function interactiveSelect(items) {
     console.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
 
     // Move cursor up to the first item
-    process.stdout.write(`\x1b[${items.length + explanatoryLineCount}A`);
+    process.stdout.write(`\x1b[${items.length + EXPLANATORY_LINE_COUNT}A`);
     moveCursorToStartOfLine();
 
     // Set up raw mode for keypress detection
@@ -94,7 +95,7 @@ export async function interactiveSelect(items) {
         cleanup();
 
         // Move to one line below the end of the list
-        moveCursor(activeLine, items.length + explanatoryLineCount);
+        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
         process.stdout.write('\r');
 
         // Sort selected line numbers and get corresponding items
@@ -106,7 +107,7 @@ export async function interactiveSelect(items) {
         cleanup();
 
         // Move to one line below the end of the list
-        moveCursor(activeLine, items.length + explanatoryLineCount);
+        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
         process.stdout.write('\r');
 
         resolve([]);
