@@ -96,7 +96,7 @@ export async function runUpdates(ids) {
  */
 function execWinget(args, { inheritStdio = false } = {}) {
   const stdio = inheritStdio ? 'inherit' : 'pipe';
-  const child = spawnSync('winget', args, { shell: false, stdio, encoding : 'utf8' });
+  const child = spawnSync('winget', args, { shell: false, stdio, encoding: 'utf8' });
 
   const stdout = child.stdout || '';
   const stderr = child.stderr || '';
