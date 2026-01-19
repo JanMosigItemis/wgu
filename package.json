@@ -1,7 +1,7 @@
 {
-  "name": "wgu",
+  "name": "win-get-updates",
   "version": "0.0.1",
-  "description": "Winget update on steroids",
+  "description": "Third party CLI frontend for winget update runs.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
