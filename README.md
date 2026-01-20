@@ -6,7 +6,21 @@ Third party CLI frontend for [winget](https://en.wikipedia.org/wiki/Windows_Pack
 
 Windows with [winget](https://en.wikipedia.org/wiki/Windows_Package_Manager) installed. Supposed to run on cmd.exe.
 
+## Install
+
+```
+npm install -g win-get-updates
+```
+
 ## Run
+
+### Global
+
+```
+wgu
+```
+
+### Local development
 
 ```
 node src\cli.js
