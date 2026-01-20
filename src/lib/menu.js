@@ -18,8 +18,10 @@ export async function interactiveSelect(items) {
     let activeLine = 0;
 
     // Display initial menu
-    for (const item of items) {
-      console.log(`[ ] ${item}`);
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      console.log(`[x] ${item}`);
+      selectedLines.set(i, true);
     }
     console.log('');
     console.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
