@@ -20,7 +20,7 @@ export async function interactiveSelect(items) {
     // Display initial menu
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      console.log(`[x] ${item}`);
+      console.log(`[x] ${item.id} ${item.currentVersion} -> ${item.availableVersion}`);
       selectedLines.set(i, true);
     }
     console.log('');
@@ -80,7 +80,7 @@ export async function interactiveSelect(items) {
 
         // Sort selected line numbers and get corresponding items
         const selectedIndices = Array.from(selectedLines.keys()).sort((a, b) => a - b);
-        const selectedItems = selectedIndices.map((idx) => items[idx]);
+        const selectedItems = selectedIndices.map((idx) => items[idx].id);
         resolve(selectedItems);
       } else if (str === 'q' || str === 'Q' || (key && key.name === 'escape')) {
         // Quit without selection

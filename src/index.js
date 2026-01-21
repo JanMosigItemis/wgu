@@ -1,9 +1,9 @@
-import { getUpdateCandidateIds, runUpdates } from './lib/winget.js';
+import { getUpdateCandidates, runUpdates } from './lib/winget.js';
 import { interactiveSelect } from './lib/menu.js';
 import WGU_VERSION from './lib/version.js';
 import { askPermissionToContinue } from './lib/console_commons.js';
 import { assertWindows, assertWingetAvailable } from './lib/os.js';
-
+import { getWindowsUserLang } from './lib/wgu_i18n.js';
 /**
  * Main application logic
  * @param {Object} options - Configuration options
@@ -30,17 +30,18 @@ export async function main({ stdout = process.stdout, stderr = process.stderr } 
     });
 
     console.log(`This is WGU v${WGU_VERSION}`);
+    console.log('Detected Windows User language:', getWindowsUserLang());
     console.log('');
 
     console.log('Retrieving list of updatable packages..');
-    const candidateIds = getUpdateCandidateIds();
+    const candidates = getUpdateCandidates();
 
-    if (candidateIds.length === 0) {
+    if (candidates.length === 0) {
       console.log('No packages available to update.');
       return 0;
     }
 
-    const selectedIds = await interactiveSelect(candidateIds);
+    const selectedIds = await interactiveSelect(candidates);
 
     if (selectedIds.length === 0) {
       console.log('Exiting without performing updates.');
