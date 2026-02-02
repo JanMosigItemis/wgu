@@ -1,13 +1,10 @@
-# GREEN PHASE - Implementation Plan
+# RED PHASE - Test Plan
 
-## Implementation Concept
-Modify `interactiveSelect` in `src/lib/menu.js` to listen for the keypress 'n'. When 'n' is pressed, it should treat it the same way as 'q' or 'ESC' - by quitting and returning an empty array `[]`.
+## Test Concept
+Create a test for `interactiveSelect` default selection behavior:
+- **Scenario**: `interactiveSelect` is initialized with a list of update items.
+- **Action**: No input is simulated immediately, just checking initial state (or simulating an immediate 'y' to accept defaults).
+- **Expected Result**: The returned list of selected items should contain **all** the items passed to the function initially.
 
-## Core Development Principles (Green Phase)
-- **Use the simplest solution that could possibly work**
-- **Make the test pass with minimal code changes**
-- **Do not refactor yet**
-
-## Next Steps
-- Implement 'n' handler in `onKeypress` logic in `src/lib/menu.js`.
-- Mark the test as done in `.gtdda/plan.md`.
+## Core Development Principles (Red Phase)
+- **Write a failing test that defines a small increment of functionality**
