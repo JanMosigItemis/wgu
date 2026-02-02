@@ -9,10 +9,9 @@ const EXPLANATORY_LINE_COUNT = 2;
  * @param {Object} options - Configuration options
  * @param {NodeJS.WriteStream} options.stdout - Output stream
  * @param {NodeJS.ReadStream} options.stdin - Input stream
- * @param {Console} options.logger - Console object for logging
  * @returns {Promise<string[]>} Selected items, or empty array if user quits
  */
-export async function interactiveSelect(items, { stdout = process.stdout, stdin = process.stdin, logger = console } = {}) {
+export async function interactiveSelect(items, { stdout = process.stdout, stdin = process.stdin } = {}) {
   if (!items || items.length === 0) {
     return [];
   }
@@ -24,11 +23,11 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
     // Display initial menu
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      logger.log(`[x] ${item.id} ${item.currentVersion} -> ${item.availableVersion}`);
+      stdout.write(`[x] ${item.id} ${item.currentVersion} -> ${item.availableVersion}\n`);
       selectedLines.set(i, true);
     }
-    logger.log('');
-    logger.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
+    stdout.write('\n');
+    stdout.write("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.\n");
 
     // Move cursor up to the first item
     stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));

@@ -16,10 +16,6 @@ describe('interactiveSelect', () => {
       },
     });
 
-    const loggerMock = {
-      log: vi.fn(),
-    };
-
     const items = [{ id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' }];
 
     const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});
@@ -27,7 +23,6 @@ describe('interactiveSelect', () => {
     const selectPromise = interactiveSelect(items, {
       stdout: stdoutMock,
       stdin: stdinMock,
-      logger: loggerMock,
     });
 
     // Simulate Ctrl+C keypress after a short delay
@@ -57,16 +52,11 @@ describe('interactiveSelect', () => {
       },
     });
 
-    const loggerMock = {
-      log: vi.fn(),
-    };
-
     const items = [{ id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' }];
 
     const selectPromise = interactiveSelect(items, {
       stdout: stdoutMock,
       stdin: stdinMock,
-      logger: loggerMock,
     });
 
     // Simulate 'n' keypress

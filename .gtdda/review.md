@@ -10,7 +10,7 @@ None
 The JSDoc for the `items` parameter describes it as `string[]`, but the implementation treats it as an array of objects with `id`, `currentVersion`, and `availableVersion` properties.
 _Suggestion_: Update the JSDoc to reflect the actual expected object structure.
 
-[ ] 2. [src/lib/menu.js#L15](src/lib/menu.js#L15)
+[x] 2. [src/lib/menu.js#L15](src/lib/menu.js#L15)
 There is an implicit coupling between `options.logger` and `options.stdout`. The code uses `logger` to print the menu lines and `stdout` to manipulate the cursor position relative to those lines. If these two dependencies point to different outputs (e.g., one to a file and one to the terminal), the cursor movements will be incorrect or corrupt the output.
 _Suggestion_: Either use `stdout` for all output to ensure consistency, or explicitly document that `logger` and `stdout` must target the same visual output.
 

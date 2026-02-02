@@ -41,7 +41,7 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
       return 0;
     }
 
-    const selectedIds = await interactiveSelect(candidates, { stdout, stdin, console: consoleObj });
+    const selectedIds = await interactiveSelect(candidates, { stdout, stdin });
 
     if (selectedIds === null) {
       consoleObj.log('Caught signal to exit.');
