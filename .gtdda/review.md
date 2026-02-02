@@ -1,17 +1,23 @@
-Last reviewed on 2026-02-02T16:48:26+01:00
+Last reviewed on 2026-02-02 17:12
 
 # Suggested Fixes
+
 None
 
 # Suggested Refactorings
-[x] 1. [test/menu.test.js#L52](test/menu.test.js#L52)
-The test uses `await new Promise((resolve) => { setTimeout(resolve, 100); });` which is a flaky way to wait for async operations. `vi.waitFor` is already used above and is more reliable.
-_Suggestion_: Remove the arbitrary sleep. Since `selectPromise` is awaited right after, the test will naturally wait for `interactiveSelect` to complete. If `interactiveSelect` hasn't resolved after the keypress, `await selectPromise` will hang (or timeout), which is a valid failure mode.
 
-[x] 2. [test/menu.test.js#L34](test/menu.test.js#L34)
-The test data `items` is slightly more verbose than needed for this specific test case (verifying Ctrl+C).
-_Suggestion_: While not critical, you could use a simpler single-item array since the list content doesn't impact the cancellation logic.
+[x] 1. [src/lib/menu.js#L8](src/lib/menu.js#L8)
+The JSDoc for the `items` parameter describes it as `string[]`, but the implementation treats it as an array of objects with `id`, `currentVersion`, and `availableVersion` properties.
+_Suggestion_: Update the JSDoc to reflect the actual expected object structure.
 
-[x] 3. [test/menu.test.js#L6](test/menu.test.js#L6)
-`process.exit` is being mocked/restored manually in `beforeEach`/`afterEach`. Vitest provides `vi.spyOn(process, 'exit')` which handles restoration automatically if `vi.restoreAllMocks()` is used, or simply `mockExit.mockRestore()` at end of test.
-_Suggestion_: Use `vi.spyOn(process, 'exit').mockImplementation(() => {})` for cleaner mocking and automatic restoration capabilities.
+[ ] 2. [src/lib/menu.js#L15](src/lib/menu.js#L15)
+There is an implicit coupling between `options.logger` and `options.stdout`. The code uses `logger` to print the menu lines and `stdout` to manipulate the cursor position relative to those lines. If these two dependencies point to different outputs (e.g., one to a file and one to the terminal), the cursor movements will be incorrect or corrupt the output.
+_Suggestion_: Either use `stdout` for all output to ensure consistency, or explicitly document that `logger` and `stdout` must target the same visual output.
+
+[ ] 3. [test/menu.test.js#L34](test/menu.test.js#L34)
+The test uses `vi.waitFor` to wrap the `stdinMock.emit` call. `vi.waitFor` is typically used for retrying assertions until they pass, not for executing actions that should happen once. Using it here might verify that `emit` doesn't throw, but it's semantically confusing and could potentially execute the action multiple times if it were to throw.
+_Suggestion_: Remove `vi.waitFor` around the emit call. If a delay is needed to simulate user latency, use a simple sleep/delay promise.
+
+[ ] 4. [test/menu.test.js](test/menu.test.js#L44)
+The `mockExit` spy is restored at the end of the test block. If any assertion in the test fails, this line will not be reached, leaving `process.exit` mocked for subsequent tests.
+_Suggestion_: Move the mock creation and restoration to `beforeEach`/`afterEach` blocks or use a `try...finally` structure to guarantee restoration.

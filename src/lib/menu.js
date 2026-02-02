@@ -5,7 +5,7 @@ const EXPLANATORY_LINE_COUNT = 2;
 
 /**
  * Displays an interactive menu for selecting items from a list
- * @param {string[]} items - List of items to display
+ * @param {Array<{id: string, currentVersion: string, availableVersion: string}>} items - List of items to display
  * @param {Object} options - Configuration options
  * @param {NodeJS.WriteStream} options.stdout - Output stream
  * @param {NodeJS.ReadStream} options.stdin - Input stream
