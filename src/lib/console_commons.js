@@ -8,24 +8,26 @@ export const MOVE_DOWN = (lines) => `\x1b[${lines}B`;
 
 /**
  * Move cursor to start of line (after checkbox position)
+ * @param {NodeJS.WriteStream} stdout - Output stream
  */
-export function moveCursorToStartOfLine() {
-  process.stdout.write(CARRIAGE_RETURN);
-  process.stdout.write(MOVE_RIGHT);
+export function moveCursorToStartOfLine(stdout = process.stdout) {
+  stdout.write(CARRIAGE_RETURN);
+  stdout.write(MOVE_RIGHT);
 }
 
 /**
  * Move the cursor to the specified index (0-based)
  * @param {number} current - Current index
  * @param {number} target - Target index
+ * @param {NodeJS.WriteStream} stdout - Output stream
  */
-export function moveCursor(current, target) {
+export function moveCursor(current, target, stdout = process.stdout) {
   if (target < current) {
-    process.stdout.write(MOVE_UP(current - target));
+    stdout.write(MOVE_UP(current - target));
   } else if (target > current) {
-    process.stdout.write(MOVE_DOWN(target - current));
+    stdout.write(MOVE_DOWN(target - current));
   }
-  moveCursorToStartOfLine();
+  moveCursorToStartOfLine(stdout);
 }
 
 export async function askPermissionToContinue() {

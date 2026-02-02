@@ -11,7 +11,7 @@ import { getWindowsUserLang } from './lib/wgu_i18n.js';
  * @param {NodeJS.WriteStream} options.stderr - Error stream
  * @returns {Promise<number>} Exit code
  */
-export async function main({ stdout = process.stdout, stderr = process.stderr } = {}) {
+export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin, console: consoleObj = console } = {}) {
   assertWindows();
   assertWingetAvailable();
 
@@ -29,28 +29,28 @@ export async function main({ stdout = process.stdout, stderr = process.stderr } 
       process.exit(0);
     });
 
-    console.log(`This is WGU v${WGU_VERSION}`);
-    console.log('Detected Windows User language:', getWindowsUserLang());
-    console.log('');
+    consoleObj.log(`This is WGU v${WGU_VERSION}`);
+    consoleObj.log('Detected Windows User language:', getWindowsUserLang());
+    consoleObj.log('');
 
-    console.log('Retrieving list of updatable packages..');
+    consoleObj.log('Retrieving list of updatable packages..');
     const candidates = getUpdateCandidates();
 
     if (candidates.length === 0) {
-      console.log('No packages available to update.');
+      consoleObj.log('No packages available to update.');
       return 0;
     }
 
-    const selectedIds = await interactiveSelect(candidates);
+    const selectedIds = await interactiveSelect(candidates, { stdout, stdin, console: consoleObj });
 
     if (selectedIds.length === 0) {
-      console.log('Exiting without performing updates.');
+      consoleObj.log('Exiting without performing updates.');
       return 0;
     }
 
-    console.log('Ok, running updates..');
+    consoleObj.log('Ok, running updates..');
     await runUpdates(selectedIds, async (id, err) => {
-      console.error(`Failed to update package ${id}: ${err.message}`);
+      consoleObj.error(`Failed to update package ${id}: ${err.message}`);
       return askPermissionToContinue();
     });
 

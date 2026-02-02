@@ -6,9 +6,13 @@ const EXPLANATORY_LINE_COUNT = 2;
 /**
  * Displays an interactive menu for selecting items from a list
  * @param {string[]} items - List of items to display
+ * @param {Object} options - Configuration options
+ * @param {NodeJS.WriteStream} options.stdout - Output stream
+ * @param {NodeJS.ReadStream} options.stdin - Input stream
+ * @param {Console} options.console - Console object for logging
  * @returns {Promise<string[]>} Selected items, or empty array if user quits
  */
-export async function interactiveSelect(items) {
+export async function interactiveSelect(items, { stdout = process.stdout, stdin = process.stdin, console: consoleObj = console } = {}) {
   if (!items || items.length === 0) {
     return [];
   }
@@ -20,21 +24,21 @@ export async function interactiveSelect(items) {
     // Display initial menu
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      console.log(`[x] ${item.id} ${item.currentVersion} -> ${item.availableVersion}`);
+      consoleObj.log(`[x] ${item.id} ${item.currentVersion} -> ${item.availableVersion}`);
       selectedLines.set(i, true);
     }
-    console.log('');
-    console.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
+    consoleObj.log('');
+    consoleObj.log("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.");
 
     // Move cursor up to the first item
-    process.stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));
-    moveCursorToStartOfLine();
+    stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));
+    moveCursorToStartOfLine(stdout);
 
     // Set up raw mode for keypress detection
-    if (process.stdin.isTTY) {
-      process.stdin.setRawMode(true);
+    if (stdin.isTTY) {
+      stdin.setRawMode(true);
     }
-    readline.emitKeypressEvents(process.stdin);
+    readline.emitKeypressEvents(stdin);
 
     const onKeypress = (str, key) => {
       // Handle Ctrl+C and Ctrl+D
@@ -52,31 +56,31 @@ export async function interactiveSelect(items) {
       // Handle arrow keys
       if (key && key.name === 'up') {
         if (activeLine > 0) {
-          moveCursor(activeLine, activeLine - 1);
+          moveCursor(activeLine, activeLine - 1, stdout);
           activeLine--;
         }
       } else if (key && key.name === 'down') {
         if (activeLine < items.length - 1) {
-          moveCursor(activeLine, activeLine + 1);
+          moveCursor(activeLine, activeLine + 1, stdout);
           activeLine++;
         }
       } else if (str === ' ') {
         // Toggle selection
         if (selectedLines.has(activeLine)) {
           selectedLines.delete(activeLine);
-          process.stdout.write(`${CARRIAGE_RETURN}[ ]`);
+          stdout.write(`${CARRIAGE_RETURN}[ ]`);
         } else {
           selectedLines.set(activeLine, true);
-          process.stdout.write(`${CARRIAGE_RETURN}[x]`);
+          stdout.write(`${CARRIAGE_RETURN}[x]`);
         }
-        moveCursorToStartOfLine();
+        moveCursorToStartOfLine(stdout);
       } else if (str === 'y' || str === 'Y') {
         // Confirm selection
         cleanup();
 
         // Move to one line below the end of the list
-        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
-        process.stdout.write(CARRIAGE_RETURN);
+        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT, stdout);
+        stdout.write(CARRIAGE_RETURN);
 
         // Sort selected line numbers and get corresponding items
         const selectedIndices = Array.from(selectedLines.keys()).sort((a, b) => a - b);
@@ -87,20 +91,20 @@ export async function interactiveSelect(items) {
         cleanup();
 
         // Move to one line below the end of the list
-        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT);
-        process.stdout.write(CARRIAGE_RETURN);
+        moveCursor(activeLine, items.length + EXPLANATORY_LINE_COUNT, stdout);
+        stdout.write(CARRIAGE_RETURN);
 
         resolve([]);
       }
     };
 
     const cleanup = () => {
-      process.stdin.removeListener('keypress', onKeypress);
-      if (process.stdin.isTTY) {
-        process.stdin.setRawMode(false);
+      stdin.removeListener('keypress', onKeypress);
+      if (stdin.isTTY) {
+        stdin.setRawMode(false);
       }
     };
 
-    process.stdin.on('keypress', onKeypress);
+    stdin.on('keypress', onKeypress);
   });
 }

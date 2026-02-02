@@ -1,13 +1,17 @@
-Last reviewed on 2026-02-02T12:39:18+01:00
+Last reviewed on 2026-02-02T12:44:59+01:00
 
 # Suggested Fixes
-None
+
+[ ] 2. [src/lib/menu.js#L43](src/lib/menu.js#L43)
+`interactiveSelect` calls `process.exit(1)` directly upon receiving `Ctrl+C`. This abruptly terminates the process from within a library function, preventing the main application loop from handling the exit gracefully (e.g., running cleanup tasks defined in `src/index.js`).
+_Suggestion_: Instead of exiting, return a sentinel value to signal cancellation to the caller.
 
 # Suggested Refactorings
-[ ] 1. [package.json#L37](package.json#L37)
-The `npm` engine requirement `>=11.5.1` is quite high and might not be met by standard Node.js LTS installations (e.g. Node 18/20) without a manual npm upgrade.
-_Suggestion_: Verify if features from npm 11.5.1 are strictly required, or relax the constraint to support standard LTS environments.
 
-[ ] 2. [package.json#L24](package.json#L24)
-The `version:gen` script must be run manually to sync `src/lib/version.js` with the version in `package.json`.
-_Suggestion_: Automate this by adding it to `version` or `prepack` lifecycle scripts (e.g. adding `"postversion": "npm run version:gen"`) to ensure the code always reflects the package version.
+[ ] 1. [package.json](package.json)
+The project lacks automated tests.
+_Suggestion_: Introduce a testing framework (e.g., the built-in `node:test` runner) and add unit tests, particularly for the output parsing logic in `winget.js`.
+
+[ ] 2. [src/lib/console_commons.js](src/lib/console_commons.js)
+ANSI escape codes are hardcoded as exported constants.
+_Suggestion_: While acceptable for a small tool, consider moving all cursor manipulation logic into a dedicated class or using a small library if complexity grows, to improve readability and encapsulation.
