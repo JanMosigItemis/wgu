@@ -48,11 +48,6 @@ describe('interactiveSelect', () => {
       mockStdin.emit('keypress', null, { ctrl: true, name: 'c' });
     }, { timeout: 100 });
 
-    // Wait a bit for the event to be processed
-    await new Promise((resolve) => {
-      setTimeout(resolve, 100);
-    });
-
     const result = await selectPromise;
 
     // Assert - process.exit should NOT be called
