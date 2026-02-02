@@ -34,7 +34,7 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=11.5.1"
+    "npm": ">=8.6.0"
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
