@@ -26,9 +26,9 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate Ctrl+C keypress after a short delay
-    await vi.waitFor(() => {
+    setTimeout(() => {
       stdinMock.emit('keypress', null, { ctrl: true, name: 'c' });
-    }, { timeout: 300 });
+    }, 300);
 
     const selectedItems = await selectPromise;
 
@@ -60,9 +60,9 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate 'n' keypress
-    await vi.waitFor(() => {
+    setTimeout(() => {
       stdinMock.emit('keypress', 'n', { name: 'n' });
-    }, { timeout: 300 });
+    }, 10);
 
     const selectedItems = await selectPromise;
 
