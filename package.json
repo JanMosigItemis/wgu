@@ -19,6 +19,7 @@
     "start": "node src/cli.js",
     "prebuild": "npm run version:gen",
     "version:gen": "node -p \"'const WGU_VERSION = \\'' + require('./package.json').version + '\\';\\nexport default WGU_VERSION;'\" > src/lib/version.js",
+    "test": "vitest run",    
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",
