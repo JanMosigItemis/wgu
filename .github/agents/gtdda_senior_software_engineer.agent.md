@@ -20,7 +20,7 @@ handoffs:
   send: true
 - label: Refactor Phase
   agent: "GTDDA Code Review Agent"
-  prompt: Perform a review. The review scope consists of all uncommitted changes plus the contents of the most recent commit. Exclusion rules are still in effect.
+  prompt: Perform a review. The review scope consists of all uncommitted changes plus the contents of the two most recent commit. Exclusion rules are still in effect.
   send: true
 - label: Fix next review suggestion
   agent: "GTDDA Senior Software Engineer"

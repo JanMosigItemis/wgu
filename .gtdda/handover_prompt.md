@@ -1,18 +1,13 @@
-# RED PHASE - Test Plan
+# GREEN PHASE - Implementation Plan
 
-## Test Concept
-We need to implement the functionality where pressing 'n' in the interactive menu causes it to quit without selection, similar to pressing 'q'.
+## Implementation Concept
+Modify `interactiveSelect` in `src/lib/menu.js` to listen for the keypress 'n'. When 'n' is pressed, it should treat it the same way as 'q' or 'ESC' - by quitting and returning an empty array `[]`.
 
-### Test Case: 'n' Key Handling
-- **Setup**:
-  - Initialize `interactiveSelect` with a list of items.
-  - Mock `stdin`, `stdout`, and `console`.
-- **Action**:
-  - Simulate a keypress of 'n'.
-- **Expectation**:
-  - The promise returned by `interactiveSelect` should resolve to an empty array `[]`.
-  - `program.exit` should not be called (implied).
+## Core Development Principles (Green Phase)
+- **Use the simplest solution that could possibly work**
+- **Make the test pass with minimal code changes**
+- **Do not refactor yet**
 
-## Core Development Principles (Red Phase)
-- **Write a failing test that defines a small increment of functionality**
-- Ensure the test fails because 'n' is currently treated as an unknown key (or ignored).
+## Next Steps
+- Implement 'n' handler in `onKeypress` logic in `src/lib/menu.js`.
+- Mark the test as done in `.gtdda/plan.md`.

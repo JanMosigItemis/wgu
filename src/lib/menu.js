@@ -87,7 +87,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
         const selectedIndices = Array.from(selectedLines.keys()).sort((a, b) => a - b);
         const selectedItems = selectedIndices.map((idx) => items[idx].id);
         resolve(selectedItems);
-      } else if (str === 'q' || str === 'Q' || (key && key.name === 'escape')) {
+      } else if (str === 'q' || str === 'Q' || str === 'n' || str === 'N' || (key && key.name === 'escape')) {
         // Quit without selection
         cleanup();
 
