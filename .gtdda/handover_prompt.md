@@ -1,13 +1,18 @@
-# GREEN PHASE - Implementation Plan
+# RED PHASE - Test Plan
 
-## Implementation Concept
-Modify `interactiveSelect` in `src/lib/menu.js` to handle the `Ctrl+C` interrupt by returning `null` (or a specific sentinel value) instead of calling `process.exit(1)`. This will allow the caller (the main loop) to handle the cleanup or exit gracefully.
+## Test Concept
+We need to implement the functionality where pressing 'n' in the interactive menu causes it to quit without selection, similar to pressing 'q'.
 
-## Core Development Principles (Green Phase)
-- **Use the simplest solution that could possibly work**
-- **Make the test pass with minimal code changes**
-- **Do not refactor yet**
+### Test Case: 'n' Key Handling
+- **Setup**:
+  - Initialize `interactiveSelect` with a list of items.
+  - Mock `stdin`, `stdout`, and `console`.
+- **Action**:
+  - Simulate a keypress of 'n'.
+- **Expectation**:
+  - The promise returned by `interactiveSelect` should resolve to an empty array `[]`.
+  - `program.exit` should not be called (implied).
 
-## Next Steps
-- Change `onKeypress` logic in `src/lib/menu.js`.
-- Mark the test as done in `.gtdda/plan.md` after verification.
+## Core Development Principles (Red Phase)
+- **Write a failing test that defines a small increment of functionality**
+- Ensure the test fails because 'n' is currently treated as an unknown key (or ignored).
