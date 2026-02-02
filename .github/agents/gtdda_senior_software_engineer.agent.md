@@ -22,7 +22,7 @@ handoffs:
   agent: "GTDDA Code Review Agent"
   prompt: Perform a review. The review scope consists of all uncommitted changes plus the contents of the two most recent commit. Exclusion rules are still in effect.
   send: true
-- label: Fix next review suggestion
+- label: Next refactoring suggestion
   agent: "GTDDA Senior Software Engineer"
   prompt: Have a look at .gtdda/review.md and implement the first unmarked entry in the section "Suggested Refactorings". If there is no unmarked entry left, mention this to the user and stop. When implementation has been finished and all tests pass, mark the entry as done by changing "[ ]" to "[x]". Ignore all entries from the section "Suggested Fixes".
   send: true

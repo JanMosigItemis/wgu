@@ -18,6 +18,6 @@ _Suggestion_: Either use `stdout` for all output to ensure consistency, or expli
 The test uses `vi.waitFor` to wrap the `stdinMock.emit` call. `vi.waitFor` is typically used for retrying assertions until they pass, not for executing actions that should happen once. Using it here might verify that `emit` doesn't throw, but it's semantically confusing and could potentially execute the action multiple times if it were to throw.
 _Suggestion_: Remove `vi.waitFor` around the emit call. If a delay is needed to simulate user latency, use a simple sleep/delay promise.
 
-[ ] 4. [test/menu.test.js](test/menu.test.js#L44)
+[x] 4. [test/menu.test.js](test/menu.test.js#L44)
 The `mockExit` spy is restored at the end of the test block. If any assertion in the test fails, this line will not be reached, leaving `process.exit` mocked for subsequent tests.
 _Suggestion_: Move the mock creation and restoration to `beforeEach`/`afterEach` blocks or use a `try...finally` structure to guarantee restoration.

@@ -1,8 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Readable, Writable } from 'node:stream';
 import { interactiveSelect } from '../src/lib/menu.js';
 
 describe('interactiveSelect', () => {
+  let mockExit;
+
+  beforeEach(() => {
+    mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    mockExit.mockRestore();
+  });
+
   it('handles Ctrl+C without calling process.exit', async () => {
     const stdinMock = new Readable({
       read() {},
@@ -17,8 +27,6 @@ describe('interactiveSelect', () => {
     });
 
     const items = [{ id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' }];
-
-    const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});
 
     const selectPromise = interactiveSelect(items, {
       stdout: stdoutMock,
@@ -35,8 +43,6 @@ describe('interactiveSelect', () => {
     // Assert - process.exit should NOT be called
     expect(mockExit).not.toHaveBeenCalled();
     expect(selectedItems).toBe(null);
-
-    mockExit.mockRestore();
   }, 1000);
 
   it('quits when user presses n', async () => {
