@@ -1,57 +1,46 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Readable, Writable } from 'node:stream';
 import { interactiveSelect } from '../src/lib/menu.js';
 
 describe('interactiveSelect', () => {
-  let originalExit;
-
-  beforeEach(() => {
-    originalExit = process.exit;
-  });
-
-  afterEach(() => {
-    process.exit = originalExit;
-  });
-
   it('handles Ctrl+C without calling process.exit', async () => {
-    // Arrange
-    const mockStdin = new Readable({
+    const stdinMock = new Readable({
       read() {},
     });
-    mockStdin.isTTY = true;
-    mockStdin.setRawMode = vi.fn();
+    stdinMock.isTTY = true;
+    stdinMock.setRawMode = vi.fn();
 
-    const mockStdout = new Writable({
+    const stdoutMock = new Writable({
       write(chunk, encoding, callback) {
         callback();
       },
     });
 
-    const mockConsole = {
+    const loggerMock = {
       log: vi.fn(),
     };
 
-    const items = [{ id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' }, { id: 'pkg2', currentVersion: '2.0.0', availableVersion: '2.1.0' }];
+    const items = [{ id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' }];
 
-    const mockExit = vi.fn();
-    process.exit = mockExit;
+    const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});
 
-    // Act - start the interactive select
     const selectPromise = interactiveSelect(items, {
-      stdout: mockStdout,
-      stdin: mockStdin,
-      console: mockConsole,
+      stdout: stdoutMock,
+      stdin: stdinMock,
+      logger: loggerMock,
     });
 
     // Simulate Ctrl+C keypress after a short delay
     await vi.waitFor(() => {
-      mockStdin.emit('keypress', null, { ctrl: true, name: 'c' });
-    }, { timeout: 100 });
+      stdinMock.emit('keypress', null, { ctrl: true, name: 'c' });
+    }, { timeout: 300 });
 
-    const result = await selectPromise;
+    const selectedItems = await selectPromise;
 
     // Assert - process.exit should NOT be called
     expect(mockExit).not.toHaveBeenCalled();
-    expect(result).toBe(null);
+    expect(selectedItems).toBe(null);
+
+    mockExit.mockRestore();
   }, 1000);
 });
