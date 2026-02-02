@@ -1,19 +1,13 @@
-# RED PHASE - Test Plan
+# GREEN PHASE - Implementation Plan
 
-## Test Concept
-We need a test to verify that `interactiveSelect` handles user interruption gracefully without terminating the process abruptly.
+## Implementation Concept
+Modify `interactiveSelect` in `src/lib/menu.js` to handle the `Ctrl+C` interrupt by returning `null` (or a specific sentinel value) instead of calling `process.exit(1)`. This will allow the caller (the main loop) to handle the cleanup or exit gracefully.
 
-### Test Case: Ctrl+C Handling
-- **Setup**:
-  - Mock `process.stdin`, `process.stdout`, and `process.exit`.
-  - Provide a list of dummy items to `interactiveSelect`.
-- **Action**:
-  - Start `interactiveSelect`.
-  - Simulate a `keypress` event for `Ctrl+C` on `stdin`.
-- **Expectation**:
-  - `process.exit` should **NOT** be called.
-  - The function should resolve (e.g., with `null` or a specific cancellation value) or reject, returning control to the caller.
+## Core Development Principles (Green Phase)
+- **Use the simplest solution that could possibly work**
+- **Make the test pass with minimal code changes**
+- **Do not refactor yet**
 
-## Core Development Principles (Red Phase)
-- **Write a failing test that defines a small increment of functionality**
-- Ensure the test fails because the current implementation calls `process.exit` directly.
+## Next Steps
+- Change `onKeypress` logic in `src/lib/menu.js`.
+- Mark the test as done in `.gtdda/plan.md` after verification.

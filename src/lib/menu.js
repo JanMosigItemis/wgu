@@ -44,7 +44,8 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
       // Handle Ctrl+C and Ctrl+D
       if (key && key.ctrl && key.name === 'c') {
         cleanup();
-        process.exit(1);
+        resolve(null);
+        return;
       }
 
       if (key && key.ctrl && key.name === 'd') {

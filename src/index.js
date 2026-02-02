@@ -43,20 +43,23 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
 
     const selectedIds = await interactiveSelect(candidates, { stdout, stdin, console: consoleObj });
 
-    if (selectedIds.length === 0) {
-      consoleObj.log('Exiting without performing updates.');
+    if (selectedIds === null) {
+      consoleObj.log('Caught signal to exit.');
       return 0;
-    }
-
+    } else if (selectedIds.length === 0) {
+      consoleObj.log('Nothing left to update. Exiting.');
+      return 0;
+    } 
     consoleObj.log('Ok, running updates..');
     await runUpdates(selectedIds, async (id, err) => {
       consoleObj.error(`Failed to update package ${id}: ${err.message}`);
       return askPermissionToContinue();
     });
-
-    return 0;
+    
   } catch (err) {
     stderr.write(`Error: ${err.message}\n`);
     return 1;
   }
+
+  return 0;
 }
