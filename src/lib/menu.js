@@ -5,25 +5,35 @@ const EXPLANATORY_LINE_COUNT = 2;
 
 /**
  * Updates all items with a given selection state
+ * @param {Map} selectedLines - Map of selected line indices to update
  * @param {number} totalLineCount - Total number of items
  * @param {boolean} shouldSelect - Whether items should be selected or deselected
  * @param {number} activeLine - Current cursor position
  * @param {NodeJS.WriteStream} stdout - Output stream
  */
-function selectAllOrNothing(totalLineCount, shouldSelect, activeLine, stdout) {
+function selectAllOrNothing(selectedLines, totalLineCount, shouldSelect, activeLine, stdout) {
   const checkbox = shouldSelect ? '[x]' : '[ ]';
   
-  const selectedLines = new Map();
+  // Clear the current selections
+  selectedLines.clear();
+  
+  // Move to the first item once
+  moveCursor(activeLine, 0, stdout);
+  
   for (let i = 0; i < totalLineCount; i++) {
     if (shouldSelect) {
       selectedLines.set(i, true);
-    } else {
-      selectedLines.delete(i);
     }
-    moveCursor(activeLine, i, stdout);
     stdout.write(`${CARRIAGE_RETURN}${checkbox}`);
-    moveCursor(i, activeLine, stdout);
+    
+    // Move to next line if not the last item
+    if (i < totalLineCount - 1) {
+      stdout.write('\n');
+    }
   }
+  
+  // Move back to the active line
+  moveCursor(totalLineCount - 1, activeLine, stdout);
 }
 
 /**
@@ -40,7 +50,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
   }
 
   return new Promise((resolve, _reject) => {
-    let selectedLines = new Map();
+    const selectedLines = new Map();
     let activeLine = 0;
 
     // Display initial menu
@@ -99,8 +109,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
         moveCursorToStartOfLine(stdout);
       } else if (str === 'a' || str === 'A') {
         const newSelectionState = selectedLines.size !== items.length;
-        selectedLines.clear();
-        selectedLines = selectAllOrNothing(items.length, newSelectionState, activeLine, stdout);
+        selectAllOrNothing(selectedLines, items.length, newSelectionState, activeLine, stdout);
         moveCursorToStartOfLine(stdout);
       } else if (str === 'y' || str === 'Y' || (key && (key.name === 'return' || key.name === 'enter'))) {
         // Confirm selection

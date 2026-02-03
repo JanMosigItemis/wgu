@@ -16,6 +16,6 @@ _Suggestion_: Extract the common logic for iterating over items and updating the
 `EXPLANATORY_LINE_COUNT` is manually coupled to the number of lines printed before the list.
 _Suggestion_: Instead of a hardcoded constant, consider capturing the cursor position or calculating the number of lines dynamically to ensure robust alignment if the header changes.
 
-[ ] 4. [src/lib/menu.js#L93]
+[x] 4. [src/lib/menu.js#L93]
 The cursor movement strategy inside the 'a' loop (moving back and forth between `activeLine` and `i` for every item) is inefficient (O(N) operations) and may cause visual flickering on slower terminals or large lists.
 _Suggestion_: Since we are updating the entire list, it might be more efficient to move the cursor to the top of the list once, rewrite the entire list state, and then move back to the `activeLine`.
