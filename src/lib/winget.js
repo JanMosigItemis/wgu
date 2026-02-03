@@ -29,7 +29,7 @@ export function getUpdateCandidates() {
   const outputLineCount = lines.length;
   const tableHeaderIndex = lines.findIndex((line) => line.match(tableHeaderRegex) !== null);
   if (tableHeaderIndex === -1) {
-    throw new Error('Could not find table header in winget output');
+    return [];
   }
   const headerLine = lines[tableHeaderIndex].trim();
   const posOffset = headerLine.indexOf(NAME_COL_NAME);

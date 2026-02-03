@@ -9,4 +9,4 @@
 [x] When all items are selected and user hits 'a' then all items are deselected.
 [x] When some items are selected and user hits 'a' then all items are selected.
 [x] When no items are selected and user hits 'a' then all items are selected.
-[ ] When winget output indicates no updates then getUpdateCandidates returns empty list
+[x] When winget output indicates no updates then getUpdateCandidates returns empty list
