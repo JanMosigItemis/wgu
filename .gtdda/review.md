@@ -1,17 +1,21 @@
-Last reviewed on 2026-02-03 10:15
+Last reviewed on 2026-02-03 10:48
 
 # Suggested Fixes
 None
 
 # Suggested Refactorings
 [x] 1. [src/lib/menu.js#L30]
-Description: The help text instructions are hardcoded and not accurate anymore (missing 'Enter' key).
-_Suggestion_: Update the help text to include 'Enter' as a confirmation option.
+The help text is missing instructions for available keys 'a' (toggle all) and 'n' (quit).
+_Suggestion_: Update the help text string to accurately reflect all available interactive actions.
 
-[ ] 2. [src/lib/menu.js#L77]
-Description: Logic for confirming selection is getting complex with multiple conditions (str check vs key check).
-_Suggestion_: Move the loop logic into a separate `handleKey(str, key)` function that returns an action-object (e.g. `{ action: 'confirm', value: ... }` or `{ action: 'move', delta: 1 }`). This would make the `onKeypress` handler cleaner and easier to test.
+[x] 2. [src/lib/menu.js#L78]
+The loop logic for toggling all items (select/deselect) is duplicated.
+_Suggestion_: Extract the common logic for iterating over items and updating the cursor/selection state into a helper function or simplify the loop to handle both state transitions.
 
-[ ] 3. [src/lib/menu.js#L90]
-Description: Quit logic conditions are very long.
-_Suggestion_: Similar to above, move the key mapping logic to a helper function.
+[x] 3. [src/lib/menu.js#L4]
+`EXPLANATORY_LINE_COUNT` is manually coupled to the number of lines printed before the list.
+_Suggestion_: Instead of a hardcoded constant, consider capturing the cursor position or calculating the number of lines dynamically to ensure robust alignment if the header changes.
+
+[ ] 4. [src/lib/menu.js#L93]
+The cursor movement strategy inside the 'a' loop (moving back and forth between `activeLine` and `i` for every item) is inefficient (O(N) operations) and may cause visual flickering on slower terminals or large lists.
+_Suggestion_: Since we are updating the entire list, it might be more efficient to move the cursor to the top of the list once, rewrite the entire list state, and then move back to the `activeLine`.

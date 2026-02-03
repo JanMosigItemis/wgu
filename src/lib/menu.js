@@ -4,6 +4,29 @@ import { moveCursorToStartOfLine, moveCursor, MOVE_UP, CARRIAGE_RETURN } from '.
 const EXPLANATORY_LINE_COUNT = 2;
 
 /**
+ * Updates all items with a given selection state
+ * @param {number} totalLineCount - Total number of items
+ * @param {boolean} shouldSelect - Whether items should be selected or deselected
+ * @param {number} activeLine - Current cursor position
+ * @param {NodeJS.WriteStream} stdout - Output stream
+ */
+function selectAllOrNothing(totalLineCount, shouldSelect, activeLine, stdout) {
+  const checkbox = shouldSelect ? '[x]' : '[ ]';
+  
+  const selectedLines = new Map();
+  for (let i = 0; i < totalLineCount; i++) {
+    if (shouldSelect) {
+      selectedLines.set(i, true);
+    } else {
+      selectedLines.delete(i);
+    }
+    moveCursor(activeLine, i, stdout);
+    stdout.write(`${CARRIAGE_RETURN}${checkbox}`);
+    moveCursor(i, activeLine, stdout);
+  }
+}
+
+/**
  * Displays an interactive menu for selecting items from a list
  * @param {Array<{id: string, currentVersion: string, availableVersion: string}>} items - List of items to display
  * @param {Object} options - Configuration options
@@ -17,7 +40,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
   }
 
   return new Promise((resolve, _reject) => {
-    const selectedLines = new Map();
+    let selectedLines = new Map();
     let activeLine = 0;
 
     // Display initial menu
@@ -27,7 +50,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
       selectedLines.set(i, true);
     }
     stdout.write('\n');
-    stdout.write("Use Up/Down arrows to navigate, Space to toggle selection, 'y' or Enter to confirm, 'q' to quit.\n");
+    stdout.write("Use Up/Down arrows to navigate, Space to toggle, 'a' to toggle all, Enter/'y' to confirm, 'n'/'q' to quit.\n");
 
     // Move cursor up to the first item
     stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));
@@ -75,27 +98,9 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
         }
         moveCursorToStartOfLine(stdout);
       } else if (str === 'a' || str === 'A') {
-        // Toggle all selections
-        const allSelected = selectedLines.size === items.length;
-        
-        if (allSelected) {
-          // Deselect all
-          selectedLines.clear();
-          for (let i = 0; i < items.length; i++) {
-            moveCursor(activeLine, i, stdout);
-            stdout.write(`${CARRIAGE_RETURN}[ ]`);
-            moveCursor(i, activeLine, stdout);
-          }
-        } else {
-          // Select all
-          for (let i = 0; i < items.length; i++) {
-            selectedLines.set(i, true);
-            moveCursor(activeLine, i, stdout);
-            stdout.write(`${CARRIAGE_RETURN}[x]`);
-            moveCursor(i, activeLine, stdout);
-          }
-        }
-        
+        const newSelectionState = selectedLines.size !== items.length;
+        selectedLines.clear();
+        selectedLines = selectAllOrNothing(items.length, newSelectionState, activeLine, stdout);
         moveCursorToStartOfLine(stdout);
       } else if (str === 'y' || str === 'Y' || (key && (key.name === 'return' || key.name === 'enter'))) {
         // Confirm selection
