@@ -30,6 +30,18 @@ export function assertLocaleSupported(locale) {
 }
 
 /**
+ * Returns the locale if supported, otherwise returns 'en' as fallback.
+ * @param {string} locale - The locale code to validate
+ * @returns {string} The locale if supported, otherwise 'en'
+ */
+export function getSystemLocaleOrFallback(locale) {
+  if (SUPPORTED_LOCALES.includes(locale)) {
+    return locale;
+  }
+  return 'en';
+}
+
+/**
  * Returns the localized string for the given name and locale.
  * Falls back to 'en' if not found, or returns the key if missing.
  * @param {string} key - The string key
