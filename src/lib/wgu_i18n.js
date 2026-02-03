@@ -1,6 +1,6 @@
 import { spawnSyncProcess } from './system.js';
 
-export const WINGET_COLS = Object.freeze({
+export const WINGET_COLS_TO_I18N_KEY_MAP = Object.freeze({
   NAME: 'name_col',
   ID: 'id_col',
   VERSION: 'version_col',
@@ -8,14 +8,26 @@ export const WINGET_COLS = Object.freeze({
   SOURCE: 'source_col',
 });
 
-// Winget table column names
-const col_names = {
+const WINGET_LOCALIZED_COL_NAMES = {
   name_col: { en: 'Name', de: 'Name' },
   id_col: { en: 'ID', de: 'ID' },
   version_col: { en: 'Version', de: 'Version' },
   available_col: { en: 'Available', de: 'Verfügbar' },
   source_col: { en: 'Source', de: 'Quelle' },
 };
+
+const SUPPORTED_LOCALES = ['en', 'de'];
+
+/**
+ * Validates that the locale is supported.
+ * @param {string} locale - The locale code to validate
+ * @throws {Error} If the locale is not supported
+ */
+export function assertLocaleSupported(locale) {
+  if (!SUPPORTED_LOCALES.includes(locale)) {
+    throw new Error(`Locale '${locale}' is not supported`);
+  }
+}
 
 /**
  * Returns the localized string for the given name and locale.
@@ -25,8 +37,8 @@ const col_names = {
  * @returns {string}
  */
 export function getColName(key, locale) {
-  if (col_names[key]) {
-    return col_names[key][locale] || col_names[key].en;
+  if (WINGET_LOCALIZED_COL_NAMES[key]) {
+    return WINGET_LOCALIZED_COL_NAMES[key][locale] || WINGET_LOCALIZED_COL_NAMES[key].en;
   }
   throw new Error(`Missing localization for key: ${key}`);
 }

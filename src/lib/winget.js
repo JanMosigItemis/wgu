@@ -1,4 +1,4 @@
-import { getColName, getWindowsUserLang, WINGET_COLS } from './wgu_i18n.js';
+import { getColName, getWindowsUserLang, assertLocaleSupported, WINGET_COLS_TO_I18N_KEY_MAP } from './wgu_i18n.js';
 import { spawnSyncProcess } from './system.js';
 
 /**
@@ -8,11 +8,12 @@ import { spawnSyncProcess } from './system.js';
  */
 export function getUpdateCandidates() {
   const locale = getWindowsUserLang();
-  const NAME_COL_NAME = getColName(WINGET_COLS.NAME, locale);
-  const ID_COL_NAME = getColName(WINGET_COLS.ID, locale);
-  const VERSION_COL_NAME = getColName(WINGET_COLS.VERSION, locale);
-  const AVAILABLE_COL_NAME = getColName(WINGET_COLS.AVAILABLE, locale);
-  const SOURCE_COL_NAME = getColName(WINGET_COLS.SOURCE, locale);
+  assertLocaleSupported(locale);
+  const NAME_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.NAME, locale);
+  const ID_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.ID, locale);
+  const VERSION_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.VERSION, locale);
+  const AVAILABLE_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.AVAILABLE, locale);
+  const SOURCE_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.SOURCE, locale);
   const tableHeaderRegex = new RegExp(`.*${NAME_COL_NAME}\\s+${ID_COL_NAME}\\s+${VERSION_COL_NAME}\\s+${AVAILABLE_COL_NAME}\\s+${SOURCE_COL_NAME}.*`);
 
   const wgOutput = spawnSyncProcess('winget', ['upgrade', '--include-unknown']);
