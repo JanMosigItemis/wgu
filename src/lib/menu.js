@@ -27,7 +27,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
       selectedLines.set(i, true);
     }
     stdout.write('\n');
-    stdout.write("Use Up/Down arrows to navigate, Space to toggle selection, 'y' to confirm, 'q' to quit.\n");
+    stdout.write("Use Up/Down arrows to navigate, Space to toggle selection, 'y' or Enter to confirm, 'q' to quit.\n");
 
     // Move cursor up to the first item
     stdout.write(MOVE_UP(items.length + EXPLANATORY_LINE_COUNT));
