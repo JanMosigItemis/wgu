@@ -1,19 +1,19 @@
 ---
 name: GTDDA Code Review Agent
-description: "Performs a comprehensive code review"
-tools: ["read", "edit", "search", "execute"]
+description: 'Performs a comprehensive code review'
+tools: ['read', 'edit', 'search', 'execute']
 argument-hint: '(Re)run with "review"'
 handoffs:
   - label: Fix next error
-    agent: "GTDDA TDD Developer"
+    agent: 'GTDDA TDD Developer'
     prompt: Have a look at .gtdda/review.md and identify the first unmarked issue in the section "Suggested Fixes". If there is none left, mention this to the user and stop. Otherwise come up with a test plan to verify that this issue has been resolved and add this test to the list of unmarked tests in ".gtdda/plan.md". If no additional test is needed to verify the fix, mention this to the user and do not modify ".gtdda/plan.md". **ALWAYS** put the test plan into ".gtdda/plan.md" under the section "Test Scenarios". After that enter the "red" phase to have the test implemented.
     send: true
   - label: Fix next suggestion
-    agent: "GTDDA Senior Software Engineer"
+    agent: 'GTDDA Senior Software Engineer'
     prompt: Have a look at .gtdda/review.md and implement the first unmarked entry from the section "Suggested Refactorings". If there is no unmarked entry left, mention this to the user and stop. When implementation has been finished and all tests pass, mark the entry as done by changing "[ ]" to "[x]".
     send: true
   - label: (Re)run Review
-    agent: "GTDDA Code Review Agent"
+    agent: 'GTDDA Code Review Agent'
     prompt: review
     send: true
 model: Gemini 3 Pro (Preview) (copilot)

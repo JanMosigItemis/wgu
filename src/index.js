@@ -49,13 +49,12 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
     } else if (selectedIds.length === 0) {
       consoleObj.log('Nothing left to update. Exiting.');
       return 0;
-    } 
+    }
     consoleObj.log('Ok, running updates..');
     await runUpdates(selectedIds, async (id, err) => {
       consoleObj.error(`Failed to update package ${id}: ${err.message}`);
       return askPermissionToContinue();
     });
-    
   } catch (err) {
     stderr.write(`Error: ${err.message}\n`);
     return 1;

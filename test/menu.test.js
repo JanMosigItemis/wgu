@@ -107,7 +107,7 @@ describe('interactiveSelect', () => {
 
     const selectedItems = await selectPromise;
 
-    const expectedSelection = items.map(item => item.id);
+    const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
   }, 1000);
 
@@ -142,7 +142,7 @@ describe('interactiveSelect', () => {
 
     const selectedItems = await selectPromise;
 
-    const expectedSelection = items.map(item => item.id);
+    const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
   }, 1000);
 
@@ -173,7 +173,7 @@ describe('interactiveSelect', () => {
     // Simulate 'a' keypress to toggle all, then 'y' to confirm
     setTimeout(() => {
       stdinMock.emit('keypress', 'a', { name: 'a' });
-      
+
       setTimeout(() => {
         stdinMock.emit('keypress', 'y', { name: 'y' });
       }, 300);
@@ -212,11 +212,11 @@ describe('interactiveSelect', () => {
     setTimeout(() => {
       // Press space to deselect the first item
       stdinMock.emit('keypress', ' ', { name: 'space' });
-      
+
       setTimeout(() => {
         // Press 'a' to select all
         stdinMock.emit('keypress', 'a', { name: 'a' });
-        
+
         setTimeout(() => {
           // Press 'y' to confirm
           stdinMock.emit('keypress', 'y', { name: 'y' });
@@ -226,7 +226,7 @@ describe('interactiveSelect', () => {
 
     const selectedItems = await selectPromise;
 
-    const expectedSelection = items.map(item => item.id);
+    const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
   }, 1500);
 
@@ -258,11 +258,11 @@ describe('interactiveSelect', () => {
     setTimeout(() => {
       // Press 'a' to deselect all (they start all selected)
       stdinMock.emit('keypress', 'a', { name: 'a' });
-      
+
       setTimeout(() => {
         // Press 'a' again to select all
         stdinMock.emit('keypress', 'a', { name: 'a' });
-        
+
         setTimeout(() => {
           // Press 'y' to confirm
           stdinMock.emit('keypress', 'y', { name: 'y' });
@@ -272,7 +272,7 @@ describe('interactiveSelect', () => {
 
     const selectedItems = await selectPromise;
 
-    const expectedSelection = items.map(item => item.id);
+    const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
   }, 1500);
 });

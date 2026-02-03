@@ -1,6 +1,7 @@
 # Test Plan
 
 ## Test Scenarios
+
 [x] When interactiveSelect receives Ctrl+C keypress then it returns a cancellation signal
 [x] When user presses 'n' then interactiveSelect quits.
 [x] When interactiveSelect is called with a list of packages then all provided packages are selected by default.

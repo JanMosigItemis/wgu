@@ -13,25 +13,25 @@ const EXPLANATORY_LINE_COUNT = 2;
  */
 function selectAllOrNothing(selectedLines, totalLineCount, shouldSelect, activeLine, stdout) {
   const checkbox = shouldSelect ? '[x]' : '[ ]';
-  
+
   // Clear the current selections
   selectedLines.clear();
-  
+
   // Move to the first item once
   moveCursor(activeLine, 0, stdout);
-  
+
   for (let i = 0; i < totalLineCount; i++) {
     if (shouldSelect) {
       selectedLines.set(i, true);
     }
     stdout.write(`${CARRIAGE_RETURN}${checkbox}`);
-    
+
     // Move to next line if not the last item
     if (i < totalLineCount - 1) {
       stdout.write('\n');
     }
   }
-  
+
   // Move back to the active line
   moveCursor(totalLineCount - 1, activeLine, stdout);
 }
