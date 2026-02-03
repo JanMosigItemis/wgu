@@ -7,4 +7,4 @@
 [x] When user hits 'enter' then selected updates are returned by interactiveSelect.
 [x] When all items are selected and user hits 'a' then all items are deselected.
 [x] When some items are selected and user hits 'a' then all items are selected.
-[ ] When no items are selected and user hits 'a' then all items are selected.
+[x] When no items are selected and user hits 'a' then all items are selected.

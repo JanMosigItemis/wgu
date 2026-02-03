@@ -1,22 +1,15 @@
-# GREEN PHASE - Implementation Plan
+# RED PHASE - Test Plan
 
-## Implementation Concept
-Update 'a' key handler in `interactiveSelect` (in `src/lib/menu.js`) to handle the case where some items are selected.
+## New Test Case: Toggle 'a' (None -> All)
 
-## Implementation Plan
-    1. Fix the cursor movement logic in `src/lib/menu.js` inside the 'a' handler.
-       - Ensure cursor returns to `activeLine` after each write.
-       - Do this for both "select all" and "deselect all" loops.
-    
-    This adheres to "simplest solution" and fixing known bugs.
+We need to verify that if the user has deselected everything, pressing 'a' selects everything again.
 
-    I will also disable the file watcher or timeout if necessary, but 1.5s should be enough.
+### Test Concept
+1. Initialize interactiveSelect with a list of items.
+2. Send input 'a' to deselect all items (since they start selected).
+3. Send input 'a' again to select all items.
+4. Send input 'ENTER' to confirm.
+5. Assert that the returned list contains all the original items.
 
-## Core Development Principles (Green Phase)
-- **Use the simplest solution that could possibly work**
-- **Make the test pass with minimal code changes**
-- **Do not refactor yet**
-
-## Next Steps
-- Apply fixes in `src/lib/menu.js`.
-- Mark the test as done in `.gtdda/plan.md`.
+## Core Development Principles (Red Phase)
+- **Write a failing test that defines a small increment of functionality**

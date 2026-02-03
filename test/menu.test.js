@@ -229,4 +229,50 @@ describe('interactiveSelect', () => {
     const expectedSelection = items.map(item => item.id);
     expect(selectedItems).toEqual(expectedSelection);
   }, 1500);
+
+  it('selects all items when user presses a with none selected', async () => {
+    const stdinMock = new Readable({
+      read() {},
+    });
+    stdinMock.isTTY = true;
+    stdinMock.setRawMode = vi.fn();
+
+    const stdoutMock = new Writable({
+      write(chunk, encoding, callback) {
+        callback();
+      },
+    });
+
+    const items = [
+      { id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' },
+      { id: 'pkg2', currentVersion: '2.0.0', availableVersion: '2.2.0' },
+      { id: 'pkg3', currentVersion: '3.0.0', availableVersion: '3.3.0' },
+    ];
+
+    const selectPromise = interactiveSelect(items, {
+      stdout: stdoutMock,
+      stdin: stdinMock,
+    });
+
+    // Simulate deselecting all items with 'a', then 'a' again to select all, then 'y' to confirm
+    setTimeout(() => {
+      // Press 'a' to deselect all (they start all selected)
+      stdinMock.emit('keypress', 'a', { name: 'a' });
+      
+      setTimeout(() => {
+        // Press 'a' again to select all
+        stdinMock.emit('keypress', 'a', { name: 'a' });
+        
+        setTimeout(() => {
+          // Press 'y' to confirm
+          stdinMock.emit('keypress', 'y', { name: 'y' });
+        }, 300);
+      }, 300);
+    }, 300);
+
+    const selectedItems = await selectPromise;
+
+    const expectedSelection = items.map(item => item.id);
+    expect(selectedItems).toEqual(expectedSelection);
+  }, 1500);
 });
