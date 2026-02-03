@@ -23,22 +23,8 @@ const SUPPORTED_LOCALES = ['en', 'de'];
  * @param {string} locale - The locale code to validate
  * @throws {Error} If the locale is not supported
  */
-export function assertLocaleSupported(locale) {
-  if (!SUPPORTED_LOCALES.includes(locale)) {
-    throw new Error(`Locale '${locale}' is not supported`);
-  }
-}
-
-/**
- * Returns the locale if supported, otherwise returns 'en' as fallback.
- * @param {string} locale - The locale code to validate
- * @returns {string} The locale if supported, otherwise 'en'
- */
-export function getSystemLocaleOrFallback(locale) {
-  if (SUPPORTED_LOCALES.includes(locale)) {
-    return locale;
-  }
-  return 'en';
+export function isLocaleSupported(locale) {
+  return SUPPORTED_LOCALES.includes(locale);
 }
 
 /**
@@ -50,18 +36,21 @@ export function getSystemLocaleOrFallback(locale) {
  */
 export function getColName(key, locale) {
   if (WINGET_LOCALIZED_COL_NAMES[key]) {
-    return WINGET_LOCALIZED_COL_NAMES[key][locale] || WINGET_LOCALIZED_COL_NAMES[key].en;
+    if (WINGET_LOCALIZED_COL_NAMES[key][locale]) {
+      return WINGET_LOCALIZED_COL_NAMES[key][locale];
+    }
+    throw new Error(`Missing localization for locale: ${locale}`);
+  } else {
+    throw new Error(`Missing localization for key: ${key}`);
   }
-  throw new Error(`Missing localization for key: ${key}`);
 }
 
 export function getWindowsUserLang() {
-  let windowsUserLangTag = 'en-US';
   try {
-    windowsUserLangTag = spawnSyncProcess('powershell', ['-c', '(Get-WinUserLanguageList)[0].LanguageTag'])?.trim();
+    const windowsUserLangTag = spawnSyncProcess('powershell', ['-c', '(Get-WinUserLanguageList)[0].LanguageTag'])?.trim();
+    return new Intl.Locale(windowsUserLangTag).language;
   } catch (err) {
-    console.debug(`Could not determine Windows user language, defaulting to ${windowsUserLangTag}:`, err.message);
+    console.debug('Could not determine Windows user language: ', err.message);
+    return null;
   }
-
-  return new Intl.Locale(windowsUserLangTag).language;
 }

@@ -3,7 +3,10 @@ import { interactiveSelect } from './lib/menu.js';
 import WGU_VERSION from './lib/version.js';
 import { askPermissionToContinue } from './lib/console_commons.js';
 import { assertWindows, assertWingetAvailable } from './lib/os.js';
-import { getWindowsUserLang } from './lib/wgu_i18n.js';
+import { getWindowsUserLang, isLocaleSupported } from './lib/wgu_i18n.js';
+
+const DEFAULT_LOCALE = 'en';
+
 /**
  * Main application logic
  * @param {Object} options - Configuration options
@@ -11,7 +14,7 @@ import { getWindowsUserLang } from './lib/wgu_i18n.js';
  * @param {NodeJS.WriteStream} options.stderr - Error stream
  * @returns {Promise<number>} Exit code
  */
-export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin, console: consoleObj = console } = {}) {
+export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin, logger = console } = {}) {
   assertWindows();
   assertWingetAvailable();
 
@@ -29,30 +32,41 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
       process.exit(0);
     });
 
-    consoleObj.log(`This is WGU v${WGU_VERSION}`);
-    consoleObj.log('Detected Windows User language:', getWindowsUserLang());
-    consoleObj.log('');
+    logger.log(`This is WGU v${WGU_VERSION}`);
 
-    consoleObj.log('Retrieving list of updatable packages..');
-    const candidates = getUpdateCandidates();
+    let windowsUserLang = getWindowsUserLang();
+    if (windowsUserLang === null) {
+      logger.log(`Could not determine Windows user language. Falling back to ${DEFAULT_LOCALE}.`);
+      windowsUserLang = DEFAULT_LOCALE;
+    }
+    logger.log(`Detected Windows User language: ${windowsUserLang}`);
+    logger.log('');
+
+    if (!isLocaleSupported(windowsUserLang)) {
+      logger.log(`Locale '${windowsUserLang}' is not supported. Falling back to ${DEFAULT_LOCALE}.`);
+      windowsUserLang = DEFAULT_LOCALE;
+    }
+
+    logger.log('Retrieving list of updatable packages..');
+    const candidates = getUpdateCandidates(windowsUserLang);
 
     if (candidates.length === 0) {
-      consoleObj.log('No packages available to update.');
+      logger.log('No packages available to update.');
       return 0;
     }
 
     const selectedIds = await interactiveSelect(candidates, { stdout, stdin });
 
     if (selectedIds === null) {
-      consoleObj.log('Caught signal to exit.');
+      logger.log('Caught signal to exit.');
       return 0;
     } else if (selectedIds.length === 0) {
-      consoleObj.log('Nothing left to update. Exiting.');
+      logger.log('Nothing left to update. Exiting.');
       return 0;
     }
-    consoleObj.log('Ok, running updates..');
+    logger.log('Ok, running updates..');
     await runUpdates(selectedIds, async (id, err) => {
-      consoleObj.error(`Failed to update package ${id}: ${err.message}`);
+      logger.error(`Failed to update package ${id}: ${err.message}`);
       return askPermissionToContinue();
     });
   } catch (err) {

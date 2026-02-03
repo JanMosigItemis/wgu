@@ -1,4 +1,4 @@
-import { getColName, getWindowsUserLang, assertLocaleSupported, WINGET_COLS_TO_I18N_KEY_MAP } from './wgu_i18n.js';
+import { getColName, WINGET_COLS_TO_I18N_KEY_MAP } from './wgu_i18n.js';
 import { spawnSyncProcess } from './system.js';
 
 /**
@@ -6,9 +6,7 @@ import { spawnSyncProcess } from './system.js';
  * @returns {string[]} Array of package IDs
  * @throws {Error} If winget command fails or returns empty output
  */
-export function getUpdateCandidates() {
-  const locale = getWindowsUserLang();
-  assertLocaleSupported(locale);
+export function getUpdateCandidates(locale) {
   const NAME_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.NAME, locale);
   const ID_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.ID, locale);
   const VERSION_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.VERSION, locale);
