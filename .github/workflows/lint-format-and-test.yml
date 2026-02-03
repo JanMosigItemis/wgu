@@ -1,5 +1,5 @@
-name: Lint and Format
-run-name: Lint and Format ${{ github.run_number }}
+name: Lint, Format and Test
+run-name: Lint, Format and Test ${{ github.run_number }}
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   lint-and-format:
-    name: Lint and Format
+    name: Lint, Format and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,6 +23,8 @@ jobs:
           node-version: 'lts/*'
       - name: Install dependencies
         run: npm ci
+      - name: Run tests
+        run: npm test
       - name: Run ESLint
         run: npm run lint
       - name: Run Prettier check
