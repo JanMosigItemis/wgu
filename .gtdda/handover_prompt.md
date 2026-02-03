@@ -1,10 +1,10 @@
 # RED PHASE - Test Plan
 
 ## Test Concept
-Create a test for `interactiveSelect` default selection behavior:
-- **Scenario**: `interactiveSelect` is initialized with a list of update items.
-- **Action**: No input is simulated immediately, just checking initial state (or simulating an immediate 'y' to accept defaults).
-- **Expected Result**: The returned list of selected items should contain **all** the items passed to the function initially.
+Create a test for confirm functionality:
+- **Scenario**: `interactiveSelect` is initialized with items.
+- **Action**: User presses 'enter' (key name `return` or `enter`).
+- **Expected Result**: This should be treated same as 'y' - confirms the selection and returns the selected items.
 
 ## Core Development Principles (Red Phase)
 - **Write a failing test that defines a small increment of functionality**
