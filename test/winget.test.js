@@ -16,4 +16,10 @@ No applicable upgrade found.
 
     expect(candidates).toEqual([]);
   });
+
+  it('throws_user_friendly_error_when_locale_is_unsupported', () => {
+    vi.spyOn(wguI18n, 'getWindowsUserLang').mockReturnValue('fr');
+
+    expect(() => getUpdateCandidates()).toThrow("Locale 'fr' is not supported");
+  });
 });
