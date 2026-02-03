@@ -1,13 +1,10 @@
-# GREEN PHASE - Implementation Plan
+# RED PHASE - Test Plan
 
-## Implementation Concept
-Modify the `onKeypress` handler in `interactiveSelect` (in `src/lib/menu.js`) to treat the 'enter'/'return' key as a confirmation action, same as 'y'.
+## Test Concept
+Create a test for the "toggle all" functionality using the 'a' key:
+- **Scenario**: `interactiveSelect` is initialized with items (all selected by default).
+- **Action**: User presses 'a', then confirms validation (Enter/y).
+- **Expected Result**: The selection should be cleared, returning an empty list of items.
 
-## Core Development Principles (Green Phase)
-- **Use the simplest solution that could possibly work**
-- **Make the test pass with minimal code changes**
-- **Do not refactor yet**
-
-## Next Steps
-- Update `src/lib/menu.js` to check for `key.name === 'return'` or `key.name === 'enter'` in the confirmation condition.
-- Mark the test as done in `.gtdda/plan.md`.
+## Core Development Principles (Red Phase)
+- **Write a failing test that defines a small increment of functionality**

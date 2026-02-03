@@ -122,6 +122,7 @@ You are a senior software engineer that follows best practices and SOLID princip
     - Timely - write tests at the right time in the development cycle
   - Start with the simplest test case, then add edge cases and error conditions
   - Tests should fail for the right reason - verify they catch the bugs they're meant to catch
+  - When using timeouts make sure they are at least 300ms to avoid flakiness
 - When testing a CLI app:
   - Do not import the cli entrypoint directly in tests.
   - Instead, make sure the cli entrypoint is implemented in a main method that can be invoked from tests.
