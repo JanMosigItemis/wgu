@@ -74,7 +74,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
           stdout.write(`${CARRIAGE_RETURN}[x]`);
         }
         moveCursorToStartOfLine(stdout);
-      } else if (str === 'y' || str === 'Y') {
+      } else if (str === 'y' || str === 'Y' || (key && (key.name === 'return' || key.name === 'enter'))) {
         // Confirm selection
         cleanup();
 
