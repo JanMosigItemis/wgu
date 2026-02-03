@@ -9,5 +9,5 @@
 [x] When all items are selected and user hits 'a' then all items are deselected.
 [x] When some items are selected and user hits 'a' then all items are selected.
 [x] When no items are selected and user hits 'a' then all items are selected.
-[x] When winget output indicates no updates then getUpdateCandidates returns empty list
-[x] When the system locale is unsupported then getUpdateCandidates throws a user-friendly error
+[x] When winget output indicates no updates then getUpdateCandidates returns empty list.
+[ ] When the system locale is unsupported then fallback to en is done and an appropriate warning is printed on screen.
