@@ -183,4 +183,50 @@ describe('interactiveSelect', () => {
 
     expect(selectedItems).toEqual([]);
   }, 1000);
+
+  it('selects all items when user presses a with some selected', async () => {
+    const stdinMock = new Readable({
+      read() {},
+    });
+    stdinMock.isTTY = true;
+    stdinMock.setRawMode = vi.fn();
+
+    const stdoutMock = new Writable({
+      write(chunk, encoding, callback) {
+        callback();
+      },
+    });
+
+    const items = [
+      { id: 'pkg1', currentVersion: '1.0.0', availableVersion: '1.1.0' },
+      { id: 'pkg2', currentVersion: '2.0.0', availableVersion: '2.2.0' },
+      { id: 'pkg3', currentVersion: '3.0.0', availableVersion: '3.3.0' },
+    ];
+
+    const selectPromise = interactiveSelect(items, {
+      stdout: stdoutMock,
+      stdin: stdinMock,
+    });
+
+    // Simulate deselecting one item, then 'a' to select all, then 'y' to confirm
+    setTimeout(() => {
+      // Press space to deselect the first item
+      stdinMock.emit('keypress', ' ', { name: 'space' });
+      
+      setTimeout(() => {
+        // Press 'a' to select all
+        stdinMock.emit('keypress', 'a', { name: 'a' });
+        
+        setTimeout(() => {
+          // Press 'y' to confirm
+          stdinMock.emit('keypress', 'y', { name: 'y' });
+        }, 300);
+      }, 300);
+    }, 300);
+
+    const selectedItems = await selectPromise;
+
+    const expectedSelection = items.map(item => item.id);
+    expect(selectedItems).toEqual(expectedSelection);
+  }, 1500);
 });

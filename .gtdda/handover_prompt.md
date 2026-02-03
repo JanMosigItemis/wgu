@@ -1,22 +1,11 @@
-# GREEN PHASE - Implementation Plan
+# RED PHASE - Test Plan
 
-## Implementation Concept
-Implement 'a' key handler in `interactiveSelect` (in `src/lib/menu.js`) to deselect all checkboxes.
-- **Logic**:
-  - Check if all items are currently selected.
-  - If yes, clear all selections.
-  - Update `selectedLines` state map.
-  - Redraw all checkboxes:
-    - Iterate from `0` to `items.length - 1`.
-    - Use `moveCursor` to jump to each line.
-    - Print `[ ]`.
-    - Return cursor to original `activeLine`.
+## Test Concept
+Create a test for the "toggle all" functionality using the 'a' key (Selection Case):
+- **Scenario**: `interactiveSelect` is initialized with items.
+- **Setup**: Start with a state where only *some* items are selected (e.g., deselected one item manually or started with mixed selection if possible, but currently we select all by default, so we need to deselect one first).
+- **Action**: User presses 'a', then confirms validation (Enter/y).
+- **Expected Result**: All items should be selected.
 
-## Core Development Principles (Green Phase)
-- **Use the simplest solution that could possibly work**
-- **Make the test pass with minimal code changes**
-- **Do not refactor yet**
-
-## Next Steps
-- Implement logic in `src/lib/menu.js`.
-- Mark the test as done in `.gtdda/plan.md`.
+## Core Development Principles (Red Phase)
+- **Write a failing test that defines a small increment of functionality**
