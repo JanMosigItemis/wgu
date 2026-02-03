@@ -74,6 +74,22 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
           stdout.write(`${CARRIAGE_RETURN}[x]`);
         }
         moveCursorToStartOfLine(stdout);
+      } else if (str === 'a' || str === 'A') {
+        // Toggle all selections
+        const allSelected = selectedLines.size === items.length;
+        
+        if (allSelected) {
+          // Deselect all
+          selectedLines.clear();
+          for (let i = 0; i < items.length; i++) {
+            moveCursor(activeLine, i, stdout);
+            stdout.write(`${CARRIAGE_RETURN}[ ]`);
+          }
+        }
+        
+        // Return cursor to active line
+        moveCursor(activeLine === 0 ? 0 : items.length - 1, activeLine, stdout);
+        moveCursorToStartOfLine(stdout);
       } else if (str === 'y' || str === 'Y' || (key && (key.name === 'return' || key.name === 'enter'))) {
         // Confirm selection
         cleanup();
