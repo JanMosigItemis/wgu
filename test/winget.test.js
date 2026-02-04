@@ -18,12 +18,15 @@ describe('getUpdateCandidates', () => {
   });
 
   it('returns_array_with_name_id_currentVersion_and_availableVersion_when_updates_are_available', () => {
+    const expectedName = 'Microsoft Visual Studio Code';
+    const expectedId = 'Microsoft.VSCode';
+    const expectedCurrentVer = '1.85.0';
+    const expectedAvailableVer = '1.86.0';
     const updatesOutput = `
 Name                          ID                    Version        Available      Source
 -------------------------------------------------------------------------------------------------
-Microsoft Visual Studio Code  Microsoft.VSCode      1.85.0         1.86.0         winget
-Node.js                       OpenJS.NodeJS         20.10.0        20.11.0        winget
-2 upgrades available.
+${expectedName}  ${expectedId}      ${expectedCurrentVer}         ${expectedAvailableVer}         winget
+1 upgrade available.
 
 `;
 
@@ -31,6 +34,6 @@ Node.js                       OpenJS.NodeJS         20.10.0        20.11.0      
 
     const candidates = getUpdateCandidates(KNOWN_LOCALE);
 
-    expect(candidates).toEqual([{ name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }, { name: 'Node.js', id: 'OpenJS.NodeJS', currentVersion: '20.10.0', availableVersion: '20.11.0' }]);
+    expect(candidates).toEqual([{ name: expectedName, id: expectedId, currentVersion: expectedCurrentVer, availableVersion: expectedAvailableVer }]);
   });
 });

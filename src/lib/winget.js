@@ -31,13 +31,13 @@ export function getUpdateCandidates(locale) {
   if (tableHeaderIndex === -1) {
     return [];
   }
-  const headerLine = lines[tableHeaderIndex].trim();
-  const posOffset = headerLine.indexOf(NAME_COL_NAME);
-  const idColPos = headerLine.indexOf(ID_COL_NAME) - posOffset;
-  const versionColPos = headerLine.indexOf(VERSION_COL_NAME) - posOffset;
-  const availableColPos = headerLine.indexOf(AVAILABLE_COL_NAME) - posOffset;
-  const sourcePos = headerLine.indexOf(SOURCE_COL_NAME) - posOffset;
-  if (posOffset === -1 || idColPos === -1 || versionColPos === -1 || availableColPos === -1 || sourcePos === -1) {
+  const headerRow = lines[tableHeaderIndex].trim();
+  const headerRowPosOffset = headerRow.indexOf(NAME_COL_NAME);
+  const idColPos = headerRow.indexOf(ID_COL_NAME) - headerRowPosOffset;
+  const versionColPos = headerRow.indexOf(VERSION_COL_NAME) - headerRowPosOffset;
+  const availableColPos = headerRow.indexOf(AVAILABLE_COL_NAME) - headerRowPosOffset;
+  const sourcePos = headerRow.indexOf(SOURCE_COL_NAME) - headerRowPosOffset;
+  if (headerRowPosOffset === -1 || idColPos === -1 || versionColPos === -1 || availableColPos === -1 || sourcePos === -1) {
     throw new Error('Could not find expected column headers in winget output');
   }
 
