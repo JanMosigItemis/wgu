@@ -13,3 +13,5 @@
 [x] When the system locale is unsupported then fallback to en.
 [x] When the system locale is unsupported print an appropriate warning and continue with default locale.
 [x] When winget outputs a list of available updates, getUpdateCandidates should return these updates as array of { name, id, currentVersion, availableVersion }
+[x] When ignore list exists in user home then all contained package ids should be put on an ignore list.
+[ ] When an ignore list has been loaded then contained package ids should be removed from update candidates.
