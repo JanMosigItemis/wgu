@@ -1,6 +1,6 @@
 {
   "name": "win-get-updates",
-  "version": "0.0.5-SNAPSHOT",
+  "version": "0.0.5",
   "description": "Third party CLI frontend for winget update runs.",
   "repository": {
     "type": "git",

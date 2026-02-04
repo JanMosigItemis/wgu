@@ -2,7 +2,7 @@
 
 ## Ground rules
 
-- You must follow all rules depicted in the file gtdda_general_ground_rules.md
+- You must follow all rules depicted in the file .github/gtdda_general_ground_rules.md.
 
 ## Target Environment
 
