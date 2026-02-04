@@ -2,8 +2,9 @@ import { getColName, WINGET_COLS_TO_I18N_KEY_MAP } from './wgu_i18n.js';
 import { spawnSyncProcess } from './system.js';
 
 /**
- * Retrieves a list of package IDs that can be updated via winget
- * @returns {string[]} Array of package IDs
+ * Retrieves available package updates from winget
+ * @param {string} locale - The locale to use for parsing winget's localized column headers
+ * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
  * @throws {Error} If winget command fails or returns empty output
  */
 export function getUpdateCandidates(locale) {
@@ -32,17 +33,17 @@ export function getUpdateCandidates(locale) {
   }
   const headerLine = lines[tableHeaderIndex].trim();
   const posOffset = headerLine.indexOf(NAME_COL_NAME);
-  const idPos = headerLine.indexOf(ID_COL_NAME) - posOffset;
-  const versionPos = headerLine.indexOf(VERSION_COL_NAME) - posOffset;
-  const availablePos = headerLine.indexOf(AVAILABLE_COL_NAME) - posOffset;
+  const idColPos = headerLine.indexOf(ID_COL_NAME) - posOffset;
+  const versionColPos = headerLine.indexOf(VERSION_COL_NAME) - posOffset;
+  const availableColPos = headerLine.indexOf(AVAILABLE_COL_NAME) - posOffset;
   const sourcePos = headerLine.indexOf(SOURCE_COL_NAME) - posOffset;
-  if (posOffset === -1 || idPos === -1 || versionPos === -1 || availablePos === -1 || sourcePos === -1) {
+  if (posOffset === -1 || idColPos === -1 || versionColPos === -1 || availableColPos === -1 || sourcePos === -1) {
     throw new Error('Could not find expected column headers in winget output');
   }
 
-  const idColLength = versionPos - idPos;
-  const versionColLength = availablePos - versionPos;
-  const availableColLength = sourcePos - availablePos;
+  const idColLength = versionColPos - idColPos;
+  const versionColLength = availableColPos - versionColPos;
+  const availableColLength = sourcePos - availableColPos;
 
   const packageListStartLineIndex = tableHeaderIndex + 2; // Skip header and separator line
   const candidates = [];
@@ -52,11 +53,12 @@ export function getUpdateCandidates(locale) {
     if (!line || line.trim().length === 0) {
       continue;
     }
-    const id = line.substring(idPos, idPos + idColLength).trim();
-    const currentVersion = line.substring(versionPos, versionPos + versionColLength).trim();
-    const availableVersion = line.substring(availablePos, availablePos + availableColLength).trim();
+    const name = line.substring(0, idColPos).trim();
+    const id = line.substring(idColPos, idColPos + idColLength).trim();
+    const currentVersion = line.substring(versionColPos, versionColPos + versionColLength).trim();
+    const availableVersion = line.substring(availableColPos, availableColPos + availableColLength).trim();
     if (id) {
-      candidates.push({ id, currentVersion, availableVersion });
+      candidates.push({ name, id, currentVersion, availableVersion });
     }
   }
 

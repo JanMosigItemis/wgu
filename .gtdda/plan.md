@@ -12,4 +12,4 @@
 [x] When winget output indicates no updates then getUpdateCandidates returns empty list.
 [x] When the system locale is unsupported then fallback to en.
 [x] When the system locale is unsupported print an appropriate warning and continue with default locale.
-[ ] When winget outputs a list of available updates, getUpdateCandidates should return these updates as array of { name, id, currentVersion, availableVersion }
+[x] When winget outputs a list of available updates, getUpdateCandidates should return these updates as array of { name, id, currentVersion, availableVersion }
