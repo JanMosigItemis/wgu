@@ -69,6 +69,7 @@ export function getUpdateCandidates(locale, ignoreList = []) {
 /**
  * Runs winget update commands for the provided package IDs
  * @param {string[]} ids - Package IDs to update
+ * @param {Function} errorHandler - Optional error handler function (id, err) => Promise<boolean>. Returns true to continue, false to abort.
  * @returns {Promise<void>}
  */
 export async function runUpdates(ids, errorHandler = async (_id, _err) => false) {

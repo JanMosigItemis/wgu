@@ -16,6 +16,8 @@ const IGNORE_FILE_NAME_DEFAULT = '.wguignore';
  * @param {Object} options - Configuration options
  * @param {NodeJS.WriteStream} options.stdout - Output stream
  * @param {NodeJS.WriteStream} options.stderr - Error stream
+ * @param {NodeJS.ReadStream} options.stdin - Input stream
+ * @param {Object} options.logger - Logger object with log and error methods
  * @param {string|null} options.ignoreFilePath - Path to custom ignore file
  * @returns {Promise<number>} Exit code
  */

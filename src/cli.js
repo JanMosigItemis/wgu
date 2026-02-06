@@ -59,9 +59,6 @@ export function parseArgs(args) {
   return result;
 }
 
-/**
- * CLI entry point
- */
 async function cli() {
   const args = process.argv.slice(2);
   const parsed = parseArgs(args);
