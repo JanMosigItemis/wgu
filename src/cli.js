@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { main } from './index.js';
+import { parseArgs } from './lib/arg_parser.js';
 import WGU_VERSION from './lib/version.js';
 
 const HELP_TEXT = `
@@ -27,37 +28,6 @@ EXAMPLES:
   wgu --version                    Show version
   wgu --ignore-file myignore.txt   Use custom ignore file
 `;
-
-/**
- * Parse command line arguments
- * @param {string[]} args - Command line arguments
- * @returns {{ help: boolean, version: boolean, ignoreFilePath: string | null, error: string | null }}
- */
-export function parseArgs(args) {
-  const result = { help: false, version: false, ignoreFilePath: null, error: null };
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    if (arg === '--help' || arg === '-h') {
-      result.help = true;
-    } else if (arg === '--version' || arg === '-v') {
-      result.version = true;
-    } else if (arg === '--ignore-file') {
-      const nextArg = args[i + 1];
-      if (!nextArg || nextArg.startsWith('-')) {
-        result.error = '--ignore-file requires a path argument';
-        return result;
-      }
-      result.ignoreFilePath = nextArg;
-      i++; // Skip the next argument since we consumed it
-    } else {
-      result.error = `Unknown option: ${arg}`;
-      return result;
-    }
-  }
-
-  return result;
-}
 
 async function cli() {
   const args = process.argv.slice(2);

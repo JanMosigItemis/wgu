@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseArgs } from '../src/cli.js';
+import { parseArgs } from '../src/lib/arg_parser.js';
 
 describe('parseArgs', () => {
   it('returns_default_values_when_no_arguments_are_provided', () => {

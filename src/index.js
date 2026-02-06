@@ -36,7 +36,7 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
     process.on('exit', restoreCursor);
     process.on('SIGINT', () => {
       restoreCursor();
-      process.exit(0);
+      return 0;
     });
 
     logger.log(`This is WGU v${WGU_VERSION}`);
