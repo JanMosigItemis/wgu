@@ -10,6 +10,7 @@ import { loadIgnoreList } from './lib/ignore.js';
 
 const DEFAULT_LOCALE = 'en';
 
+const IGNORE_FILE_NAME_DEFAULT = '.wguignore';
 /**
  * Main application logic
  * @param {Object} options - Configuration options
@@ -53,10 +54,10 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
 
     let ignoreList = [];
     try {
-      const filePath = ignoreFilePath || join(homedir(), '.wguignore');
+      const filePath = ignoreFilePath || join(homedir(), IGNORE_FILE_NAME_DEFAULT);
       ignoreList = loadIgnoreList(filePath);
       logger.log(`Using ignore list: ${filePath}`);
-    } catch (err) {
+    } catch {
       // Ignore file not found or read errors - treat as empty ignore list
     }
 

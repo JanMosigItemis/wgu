@@ -10,32 +10,43 @@ USAGE:
   wgu [options]
 
 OPTIONS:
-  --help, -h     Show this help message
-  --version, -v  Show version
+  --help, -h              Show this help message
+  --version, -v           Show version
+  --ignore-file <path>    Use custom ignore file instead of ~/.wguignore
 
 DESCRIPTION:
   Interactive CLI for managing Windows package updates via winget.
   Provides a menu-driven interface to select and update packages.
 
 EXAMPLES:
-  wgu              Run the interactive updater
-  wgu --help       Display help
-  wgu --version    Show version
+  wgu                              Run the interactive updater
+  wgu --help                       Display help
+  wgu --version                    Show version
+  wgu --ignore-file myignore.txt   Use custom ignore file
 `;
 
 /**
  * Parse command line arguments
  * @param {string[]} args - Command line arguments
- * @returns {{ help: boolean, version: boolean, error: string | null }}
+ * @returns {{ help: boolean, version: boolean, ignoreFilePath: string | null, error: string | null }}
  */
-function parseArgs(args) {
-  const result = { help: false, version: false, error: null };
+export function parseArgs(args) {
+  const result = { help: false, version: false, ignoreFilePath: null, error: null };
 
-  for (const arg of args) {
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
     if (arg === '--help' || arg === '-h') {
       result.help = true;
     } else if (arg === '--version' || arg === '-v') {
       result.version = true;
+    } else if (arg === '--ignore-file') {
+      const nextArg = args[i + 1];
+      if (!nextArg || nextArg.startsWith('-')) {
+        result.error = '--ignore-file requires a path argument';
+        return result;
+      }
+      result.ignoreFilePath = nextArg;
+      i++; // Skip the next argument since we consumed it
     } else {
       result.error = `Unknown option: ${arg}`;
       return result;
@@ -68,7 +79,12 @@ async function cli() {
     process.exit(0);
   }
 
-  const exitCode = await main();
+  const options = {};
+  if (parsed.ignoreFilePath) {
+    options.ignoreFilePath = parsed.ignoreFilePath;
+  }
+
+  const exitCode = await main(options);
   process.exit(exitCode);
 }
 
