@@ -1,5 +1,5 @@
 import * as readline from 'node:readline';
-import { moveCursorToStartOfLine, moveCursor, MOVE_UP, CARRIAGE_RETURN } from './console_commons.js';
+import { moveCursorToStartOfLine, moveCursor, CARRIAGE_RETURN } from './console_commons.js';
 
 const EXPLANATORY_LINE_COUNT = 2;
 
@@ -76,7 +76,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
         moveCursorToStartOfLine(stdout);
       } else if (str === 'a' || str === 'A') {
         const newSelectionState = selectedLines.size !== items.length;
-        selectedLines = selectAllOrNothing(items, newSelectionState, activeLine, stdout);
+        selectedLines = selectAllOrNothing(items, newSelectionState);
         redrawSelection(items, selectedLines, activeLine, stdout);
       } else if (str === 'y' || str === 'Y' || (key && (key.name === 'return' || key.name === 'enter'))) {
         // Confirm selection
