@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// prettier-ignore
 const expectedIds = [
   'Package.One',
   'Package.Two',
@@ -8,7 +9,7 @@ const expectedIds = [
 const fileContent = expectedIds.join('\n');
 
 vi.mock('node:fs', () => ({
-  readFileSync: vi.fn(() => fileContent)
+  readFileSync: vi.fn(() => fileContent),
 }));
 
 import { loadIgnoreList } from '../src/lib/ignore.js';
@@ -31,11 +32,12 @@ describe('loadIgnoreList', () => {
   it('filters_out_comment_lines_starting_with_hash', () => {
     const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
     const contentWithComments = 'Package.One\n# This is a comment\nPackage.Two\n# Another comment\nPackage.Three';
-    
+
     readFileSync.mockReturnValueOnce(contentWithComments);
 
     const result = loadIgnoreList(ignoreFilePath);
 
+    // prettier-ignore
     expect(result).toEqual([
       'Package.One',
       'Package.Two',
@@ -48,11 +50,12 @@ describe('loadIgnoreList', () => {
   it('trims_whitespace_from_package_ids', () => {
     const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
     const contentWithWhitespace = '  Package.One  \n\tPackage.Two\t\n   Package.Three   ';
-    
+
     readFileSync.mockReturnValueOnce(contentWithWhitespace);
 
     const result = loadIgnoreList(ignoreFilePath);
 
+    // prettier-ignore
     expect(result).toEqual([
       'Package.One',
       'Package.Two',
@@ -63,7 +66,7 @@ describe('loadIgnoreList', () => {
   it('filters_out_empty_lines', () => {
     const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
     const contentWithEmptyLines = 'Package.A\n\n  \n\t\nPackage.B\n';
-    
+
     readFileSync.mockReturnValueOnce(contentWithEmptyLines);
 
     const result = loadIgnoreList(ignoreFilePath);

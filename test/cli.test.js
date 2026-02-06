@@ -82,6 +82,7 @@ describe('parseArgs', () => {
   });
 
   it('accepts_ignore_file_with_other_flags', () => {
+    // prettier-ignore
     const result = parseArgs([
       '--help',
       '--ignore-file',

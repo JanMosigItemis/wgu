@@ -61,7 +61,7 @@ Microsoft Visual Studio Code  Microsoft.VSCode      1.85.0         1.86.0       
 
 `;
     const ignoreList = ['Some.Package'];
-    
+
     const spawnSpy = vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(mockOutput);
 
     const result = getUpdateCandidates(KNOWN_LOCALE, ignoreList);

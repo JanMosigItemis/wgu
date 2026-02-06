@@ -115,7 +115,7 @@ export async function interactiveSelect(items, { stdout = process.stdout, stdin 
 function redrawSelection(items, selectedLines, activeLine, stdout) {
   moveCursor(activeLine, 0, stdout);
   stdout.write(CARRIAGE_RETURN);
-  
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const checkBox = selectedLines.has(i) ? '[x]' : '[ ]';
@@ -127,4 +127,3 @@ function redrawSelection(items, selectedLines, activeLine, stdout) {
 
   moveCursor(items.length + EXPLANATORY_LINE_COUNT, activeLine, stdout);
 }
-

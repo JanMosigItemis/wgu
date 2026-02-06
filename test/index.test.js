@@ -85,12 +85,12 @@ describe('main', () => {
     const customIgnoreFilePath = 'C:\\custom\\ignore.txt';
     const expectedIgnoreList = ['Package.One', 'Package.Two'];
 
-    await main({ 
-      stdout: mockStdout, 
-      stderr: mockStderr, 
-      stdin: mockStdin, 
+    await main({
+      stdout: mockStdout,
+      stderr: mockStderr,
+      stdin: mockStdin,
       logger: mockLogger,
-      ignoreFilePath: customIgnoreFilePath 
+      ignoreFilePath: customIgnoreFilePath,
     });
 
     expect(loadIgnoreList).toHaveBeenCalledWith(customIgnoreFilePath);
@@ -103,11 +103,11 @@ describe('main', () => {
       throw new Error('Read failure');
     });
 
-    const exitCode = await main({ 
-      stdout: mockStdout, 
-      stderr: mockStderr, 
-      stdin: mockStdin, 
-      logger: mockLogger 
+    const exitCode = await main({
+      stdout: mockStdout,
+      stderr: mockStderr,
+      stdin: mockStdin,
+      logger: mockLogger,
     });
 
     expect(exitCode).toBe(1);
