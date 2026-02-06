@@ -27,4 +27,21 @@ describe('loadIgnoreList', () => {
     expect(readFileSync).toHaveBeenCalledWith(ignoreFilePath, 'utf8');
     expect(result).toEqual(expectedIds);
   });
+
+  it('filters_out_comment_lines_starting_with_hash', () => {
+    const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
+    const contentWithComments = 'Package.One\n# This is a comment\nPackage.Two\n# Another comment\nPackage.Three';
+    
+    readFileSync.mockReturnValueOnce(contentWithComments);
+
+    const result = loadIgnoreList(ignoreFilePath);
+
+    expect(result).toEqual([
+      'Package.One',
+      'Package.Two',
+      'Package.Three'
+    ]);
+    expect(result).not.toContain('# This is a comment');
+    expect(result).not.toContain('# Another comment');
+  });
 });
