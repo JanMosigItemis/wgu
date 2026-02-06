@@ -1,9 +1,12 @@
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { getUpdateCandidates, runUpdates } from './lib/winget.js';
 import { interactiveSelect } from './lib/menu.js';
 import WGU_VERSION from './lib/version.js';
 import { askPermissionToContinue } from './lib/console_commons.js';
 import { assertWindows, assertWingetAvailable } from './lib/os.js';
 import { getWindowsUserLang, isLocaleSupported } from './lib/wgu_i18n.js';
+import { loadIgnoreList } from './lib/ignore.js';
 
 const DEFAULT_LOCALE = 'en';
 
@@ -47,8 +50,16 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
       windowsUserLang = DEFAULT_LOCALE;
     }
 
+    let ignoreList = [];
+    try {
+      const ignoreFilePath = join(homedir(), '.wguignore');
+      ignoreList = loadIgnoreList(ignoreFilePath);
+    } catch (err) {
+      // Ignore file not found or read errors - treat as empty ignore list
+    }
+
     logger.log('Retrieving list of updatable packages..');
-    const candidates = getUpdateCandidates(windowsUserLang);
+    const candidates = getUpdateCandidates(windowsUserLang, ignoreList);
 
     if (candidates.length === 0) {
       logger.log('No packages available to update.');
