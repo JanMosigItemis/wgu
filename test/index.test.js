@@ -80,4 +80,21 @@ describe('main', () => {
     expect(loadIgnoreList).toHaveBeenCalledWith(expectedIgnoreFilePath);
     expect(getUpdateCandidates).toHaveBeenCalledWith('en', expectedIgnoreList);
   });
+
+  it('loads_ignore_list_from_custom_path_when_ignoreFilePath_option_is_provided', async () => {
+    const customIgnoreFilePath = 'C:\\custom\\ignore.txt';
+    const expectedIgnoreList = ['Package.One', 'Package.Two'];
+
+    await main({ 
+      stdout: mockStdout, 
+      stderr: mockStderr, 
+      stdin: mockStdin, 
+      logger: mockLogger,
+      ignoreFilePath: customIgnoreFilePath 
+    });
+
+    expect(loadIgnoreList).toHaveBeenCalledWith(customIgnoreFilePath);
+    expect(homedir).not.toHaveBeenCalled();
+    expect(getUpdateCandidates).toHaveBeenCalledWith('en', expectedIgnoreList);
+  });
 });
