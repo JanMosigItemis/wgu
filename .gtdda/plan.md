@@ -16,4 +16,4 @@
 [x] When ignore list exists in user home then all contained package ids should be put on an ignore list.
 [x] When an ignore list has been loaded then contained package ids should be removed from update candidates.
 [x] When app is started without any arguments then ignore list is loaded from the file .wguignore which is assumed to be located in the user's home dir.
-[ ] When app is started with argument --ignore-file <path> then ignore list is loaded from file <path>.
+[x] When app is started with argument --ignore-file <path> then ignore list is loaded from file <path>.

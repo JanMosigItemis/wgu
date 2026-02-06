@@ -15,9 +15,10 @@ const DEFAULT_LOCALE = 'en';
  * @param {Object} options - Configuration options
  * @param {NodeJS.WriteStream} options.stdout - Output stream
  * @param {NodeJS.WriteStream} options.stderr - Error stream
+ * @param {string|null} options.ignoreFilePath - Path to custom ignore file
  * @returns {Promise<number>} Exit code
  */
-export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin, logger = console } = {}) {
+export async function main({ stdout = process.stdout, stderr = process.stderr, stdin = process.stdin, logger = console, ignoreFilePath = null } = {}) {
   assertWindows();
   assertWingetAvailable();
 
@@ -52,8 +53,9 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
 
     let ignoreList = [];
     try {
-      const ignoreFilePath = join(homedir(), '.wguignore');
-      ignoreList = loadIgnoreList(ignoreFilePath);
+      const filePath = ignoreFilePath || join(homedir(), '.wguignore');
+      ignoreList = loadIgnoreList(filePath);
+      logger.log(`Using ignore list: ${filePath}`);
     } catch (err) {
       // Ignore file not found or read errors - treat as empty ignore list
     }
