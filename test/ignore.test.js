@@ -44,4 +44,19 @@ describe('loadIgnoreList', () => {
     expect(result).not.toContain('# This is a comment');
     expect(result).not.toContain('# Another comment');
   });
+
+  it('trims_whitespace_from_package_ids', () => {
+    const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
+    const contentWithWhitespace = '  Package.One  \n\tPackage.Two\t\n   Package.Three   ';
+    
+    readFileSync.mockReturnValueOnce(contentWithWhitespace);
+
+    const result = loadIgnoreList(ignoreFilePath);
+
+    expect(result).toEqual([
+      'Package.One',
+      'Package.Two',
+      'Package.Three'
+    ]);
+  });
 });
