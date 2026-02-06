@@ -97,4 +97,20 @@ describe('main', () => {
     expect(homedir).not.toHaveBeenCalled();
     expect(getUpdateCandidates).toHaveBeenCalledWith('en', expectedIgnoreList);
   });
+
+  it('logs_warning_and_exits_with_error_code_when_reading_ignore_file_fails', async () => {
+    loadIgnoreList.mockImplementationOnce(() => {
+      throw new Error('Read failure');
+    });
+
+    const exitCode = await main({ 
+      stdout: mockStdout, 
+      stderr: mockStderr, 
+      stdin: mockStdin, 
+      logger: mockLogger 
+    });
+
+    expect(exitCode).toBe(1);
+    expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('warning'));
+  });
 });

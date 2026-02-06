@@ -19,3 +19,4 @@
 [x] When app is started with argument --ignore-file <path> then ignore list is loaded from file <path>.
 [x] When ignore file contains lines starting with '#' then ignore those lines.
 [x] Lines from ignore file are propperly trimmed.
+[~] When reading from ignore file fails then log warning and exit.
