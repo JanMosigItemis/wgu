@@ -21,3 +21,4 @@
 [x] Lines from ignore file are propperly trimmed.
 [x] When reading from ignore file fails then log error and exit.
 [x] When ignore file contains empty lines then ignore those lines.
+[ ] askPermissionToContinue uses provided input and output streams.
