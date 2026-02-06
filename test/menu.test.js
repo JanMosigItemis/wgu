@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Readable, Writable } from 'node:stream';
+import { setImmediate } from 'node:timers';
 import { interactiveSelect } from '../src/lib/menu.js';
 
 describe('interactiveSelect', () => {
@@ -33,17 +34,17 @@ describe('interactiveSelect', () => {
       stdin: stdinMock,
     });
 
-    // Simulate Ctrl+C keypress after a short delay
-    setTimeout(() => {
+    // Simulate Ctrl+C keypress
+    setImmediate(() => {
       stdinMock.emit('keypress', null, { ctrl: true, name: 'c' });
-    }, 300);
+    });
 
     const selectedItems = await selectPromise;
 
     // Assert - process.exit should NOT be called
     expect(mockExit).not.toHaveBeenCalled();
     expect(selectedItems).toBe(null);
-  }, 1000);
+  });
 
   it('quits when user presses n', async () => {
     const stdinMock = new Readable({
@@ -66,15 +67,15 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate 'n' keypress
-    setTimeout(() => {
+    setImmediate(() => {
       stdinMock.emit('keypress', 'n', { name: 'n' });
-    }, 10);
+    });
 
     const selectedItems = await selectPromise;
 
     // Assert - should return empty array
     expect(selectedItems).toEqual([]);
-  }, 1000);
+  });
 
   it('selects all packages by default when user presses y', async () => {
     const stdinMock = new Readable({
@@ -101,15 +102,15 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate 'y' keypress to accept defaults
-    setTimeout(() => {
+    setImmediate(() => {
       stdinMock.emit('keypress', 'y', { name: 'y' });
-    }, 300);
+    });
 
     const selectedItems = await selectPromise;
 
     const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
-  }, 1000);
+  });
 
   it('confirms selection when user presses enter', async () => {
     const stdinMock = new Readable({
@@ -136,15 +137,15 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate 'enter' keypress to confirm selection
-    setTimeout(() => {
+    setImmediate(() => {
       stdinMock.emit('keypress', null, { name: 'return' });
-    }, 10);
+    });
 
     const selectedItems = await selectPromise;
 
     const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
-  }, 1000);
+  });
 
   it('deselects all items when user presses a with all selected', async () => {
     const stdinMock = new Readable({
@@ -171,18 +172,17 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate 'a' keypress to toggle all, then 'y' to confirm
-    setTimeout(() => {
+    setImmediate(() => {
       stdinMock.emit('keypress', 'a', { name: 'a' });
-
-      setTimeout(() => {
+      setImmediate(() => {
         stdinMock.emit('keypress', 'y', { name: 'y' });
-      }, 300);
-    }, 300);
+      });
+    });
 
     const selectedItems = await selectPromise;
 
     expect(selectedItems).toEqual([]);
-  }, 1000);
+  });
 
   it('selects all items when user presses a with some selected', async () => {
     const stdinMock = new Readable({
@@ -209,26 +209,24 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate deselecting one item, then 'a' to select all, then 'y' to confirm
-    setTimeout(() => {
+    setImmediate(() => {
       // Press space to deselect the first item
       stdinMock.emit('keypress', ' ', { name: 'space' });
-
-      setTimeout(() => {
+      setImmediate(() => {
         // Press 'a' to select all
         stdinMock.emit('keypress', 'a', { name: 'a' });
-
-        setTimeout(() => {
+        setImmediate(() => {
           // Press 'y' to confirm
           stdinMock.emit('keypress', 'y', { name: 'y' });
-        }, 300);
-      }, 300);
-    }, 300);
+        });
+      });
+    });
 
     const selectedItems = await selectPromise;
 
     const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
-  }, 1500);
+  });
 
   it('selects all items when user presses a with none selected', async () => {
     const stdinMock = new Readable({
@@ -255,24 +253,22 @@ describe('interactiveSelect', () => {
     });
 
     // Simulate deselecting all items with 'a', then 'a' again to select all, then 'y' to confirm
-    setTimeout(() => {
+    setImmediate(() => {
       // Press 'a' to deselect all (they start all selected)
       stdinMock.emit('keypress', 'a', { name: 'a' });
-
-      setTimeout(() => {
+      setImmediate(() => {
         // Press 'a' again to select all
         stdinMock.emit('keypress', 'a', { name: 'a' });
-
-        setTimeout(() => {
+        setImmediate(() => {
           // Press 'y' to confirm
           stdinMock.emit('keypress', 'y', { name: 'y' });
-        }, 300);
-      }, 300);
-    }, 300);
+        });
+      });
+    });
 
     const selectedItems = await selectPromise;
 
     const expectedSelection = items.map((item) => item.id);
     expect(selectedItems).toEqual(expectedSelection);
-  }, 1500);
+  });
 });
