@@ -111,6 +111,6 @@ describe('main', () => {
     });
 
     expect(exitCode).toBe(1);
-    expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('warning'));
+    expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('Error: Failed to load ignore file'));
   });
 });

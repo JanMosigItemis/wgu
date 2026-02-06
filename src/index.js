@@ -53,12 +53,19 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
     }
 
     let ignoreList = [];
+    const filePath = ignoreFilePath || join(homedir(), IGNORE_FILE_NAME_DEFAULT);
     try {
-      const filePath = ignoreFilePath || join(homedir(), IGNORE_FILE_NAME_DEFAULT);
       ignoreList = loadIgnoreList(filePath);
-      logger.log(`Using ignore list: ${filePath}`);
-    } catch {
-      // Ignore file not found or read errors - treat as empty ignore list
+      logger.log(`Using ignore file: ${filePath}`);
+    } catch (error) {
+      const isDefaultPath = ignoreFilePath === null;
+      const isFileNotFound = error.code === 'ENOENT';
+      const isFatalError = !isDefaultPath || !isFileNotFound;
+
+      if (isFatalError) {
+        logger.log(`Error: Failed to load ignore file ${filePath}: ${error.message}`);
+        return 1;
+      }
     }
 
     logger.log('Retrieving list of updatable packages..');
