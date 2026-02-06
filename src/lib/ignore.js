@@ -5,5 +5,5 @@ export function loadIgnoreList(ignoreFilePath) {
   return content
     .split('\n')
     .map((line) => line.trim())
-    .filter((line) => !line.startsWith('#'));
+    .filter((line) => line.length > 0 && !line.startsWith('#'));
 }

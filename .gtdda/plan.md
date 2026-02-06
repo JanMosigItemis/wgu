@@ -20,4 +20,4 @@
 [x] When ignore file contains lines starting with '#' then ignore those lines.
 [x] Lines from ignore file are propperly trimmed.
 [x] When reading from ignore file fails then log error and exit.
-[~] When ignore file contains empty lines then ignore those lines.
+[x] When ignore file contains empty lines then ignore those lines.
