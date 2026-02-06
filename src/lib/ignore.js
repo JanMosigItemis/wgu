@@ -4,5 +4,6 @@ export function loadIgnoreList(ignoreFilePath) {
   const content = readFileSync(ignoreFilePath, 'utf8');
   return content
     .split('\n')
-    .filter((line) => !line.trim().startsWith('#'));
+    .map((line) => line.trim())
+    .filter((line) => !line.startsWith('#'));
 }

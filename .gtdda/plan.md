@@ -18,4 +18,4 @@
 [x] When app is started without any arguments then ignore list is loaded from the file .wguignore which is assumed to be located in the user's home dir.
 [x] When app is started with argument --ignore-file <path> then ignore list is loaded from file <path>.
 [x] When ignore file contains lines starting with '#' then ignore those lines.
-[ ] Lines from ignore file are propperly trimmed.
+[x] Lines from ignore file are propperly trimmed.
