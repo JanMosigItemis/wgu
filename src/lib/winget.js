@@ -2,13 +2,13 @@ import { getColName, WINGET_COLS_TO_I18N_KEY_MAP } from './wgu_i18n.js';
 import { spawnSyncProcess } from './system.js';
 
 /**
- * Retrieves available package updates from winget
+ * Parses winget output to extract package update candidates
+ * @param {string} output - Raw winget output string
  * @param {string} locale - The locale to use for parsing winget's localized column headers
  * @param {string[]} ignoreList - Package IDs to exclude from the results
  * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
- * @throws {Error} If winget command fails or returns empty output
  */
-export function getUpdateCandidates(locale, ignoreList = []) {
+export function parseWingetOutput(output, locale, ignoreList = []) {
   const NAME_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.NAME, locale);
   const ID_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.ID, locale);
   const VERSION_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.VERSION, locale);
@@ -16,13 +16,8 @@ export function getUpdateCandidates(locale, ignoreList = []) {
   const SOURCE_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.SOURCE, locale);
   const tableHeaderRegex = new RegExp(`.*${NAME_COL_NAME}\\s+${ID_COL_NAME}\\s+${VERSION_COL_NAME}\\s+${AVAILABLE_COL_NAME}\\s+${SOURCE_COL_NAME}.*`);
 
-  const wgOutput = spawnSyncProcess('winget', ['upgrade', '--include-unknown']);
-  if (!wgOutput || wgOutput.trim().length === 0) {
-    throw new Error('winget update command failed or returned empty output');
-  }
-
   // Remove last 2 lines (summary info + newline)
-  const lines = wgOutput
+  const lines = output
     .split('\n')
     .slice(0, -2)
     .map((line) => line.trim());
@@ -64,6 +59,22 @@ export function getUpdateCandidates(locale, ignoreList = []) {
   }
 
   return candidates.filter((candidate) => !ignoreList.includes(candidate.id));
+}
+
+/**
+ * Retrieves available package updates from winget
+ * @param {string} locale - The locale to use for parsing winget's localized column headers
+ * @param {string[]} ignoreList - Package IDs to exclude from the results
+ * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
+ * @throws {Error} If winget command fails or returns empty output
+ */
+export function getUpdateCandidates(locale, ignoreList = []) {
+  const wgOutput = spawnSyncProcess('winget', ['upgrade', '--include-unknown']);
+  if (!wgOutput || wgOutput.trim().length === 0) {
+    throw new Error('winget update command failed or returned empty output');
+  }
+
+  return parseWingetOutput(wgOutput, locale, ignoreList);
 }
 
 /**

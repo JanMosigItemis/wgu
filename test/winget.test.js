@@ -1,18 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getUpdateCandidates } from '../src/lib/winget.js';
+import { getUpdateCandidates, parseWingetOutput } from '../src/lib/winget.js';
 import * as system from '../src/lib/system.js';
-import * as wguI18n from '../src/lib/wgu_i18n.js';
 
-describe('getUpdateCandidates', () => {
+describe('parseWingetOutput', () => {
   const KNOWN_LOCALE = 'en';
 
   it('returns_empty_array_when_no_updates_are_available', () => {
     const noUpdatesOutput = `No applicable upgrade found.`.trim();
 
-    vi.spyOn(wguI18n, 'getWindowsUserLang').mockReturnValue(KNOWN_LOCALE);
-    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(noUpdatesOutput);
-
-    const candidates = getUpdateCandidates(KNOWN_LOCALE);
+    const candidates = parseWingetOutput(noUpdatesOutput, KNOWN_LOCALE);
 
     expect(candidates).toEqual([]);
   });
@@ -30,9 +26,7 @@ ${expectedName}  ${expectedId}      ${expectedCurrentVer}         ${expectedAvai
 
 `;
 
-    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(updatesOutput);
-
-    const candidates = getUpdateCandidates(KNOWN_LOCALE);
+    const candidates = parseWingetOutput(updatesOutput, KNOWN_LOCALE);
 
     expect(candidates).toEqual([{ name: expectedName, id: expectedId, currentVersion: expectedCurrentVer, availableVersion: expectedAvailableVer }]);
   });
@@ -49,10 +43,30 @@ Node.js                       OpenJS.NodeJS         18.0.0         18.1.0       
 `;
     const ignoreList = ['Git.Git', 'OpenJS.NodeJS'];
 
-    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(wingetOutput);
-
-    const candidates = getUpdateCandidates(KNOWN_LOCALE, ignoreList);
+    const candidates = parseWingetOutput(wingetOutput, KNOWN_LOCALE, ignoreList);
 
     expect(candidates).toEqual([{ name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }]);
+  });
+});
+
+describe('getUpdateCandidates', () => {
+  const KNOWN_LOCALE = 'en';
+
+  it('calls_spawnSyncProcess_with_correct_arguments_and_returns_parsed_output', () => {
+    const mockOutput = `
+Name                          ID                    Version        Available      Source
+-------------------------------------------------------------------------------------------------
+Microsoft Visual Studio Code  Microsoft.VSCode      1.85.0         1.86.0         winget
+1 upgrade available.
+
+`;
+    const ignoreList = ['Some.Package'];
+    
+    const spawnSpy = vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(mockOutput);
+
+    const result = getUpdateCandidates(KNOWN_LOCALE, ignoreList);
+
+    expect(spawnSpy).toHaveBeenCalledWith('winget', ['upgrade', '--include-unknown']);
+    expect(result).toEqual([{ name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }]);
   });
 });
