@@ -17,6 +17,9 @@ OPTIONS:
 DESCRIPTION:
   Interactive CLI for managing Windows package updates via winget.
   Provides a menu-driven interface to select and update packages.
+  
+  Wgu can load package IDs to ignore from ~/.wguignore if this file exists.
+  The ignore file supports comments (lines starting with #).
 
 EXAMPLES:
   wgu                              Run the interactive updater
