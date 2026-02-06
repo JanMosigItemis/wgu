@@ -4,10 +4,11 @@ import { spawnSyncProcess } from './system.js';
 /**
  * Retrieves available package updates from winget
  * @param {string} locale - The locale to use for parsing winget's localized column headers
+ * @param {string[]} ignoreList - Package IDs to exclude from the results
  * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
  * @throws {Error} If winget command fails or returns empty output
  */
-export function getUpdateCandidates(locale) {
+export function getUpdateCandidates(locale, ignoreList = []) {
   const NAME_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.NAME, locale);
   const ID_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.ID, locale);
   const VERSION_COL_NAME = getColName(WINGET_COLS_TO_I18N_KEY_MAP.VERSION, locale);
@@ -62,7 +63,7 @@ export function getUpdateCandidates(locale) {
     }
   }
 
-  return candidates;
+  return candidates.filter((candidate) => !ignoreList.includes(candidate.id));
 }
 
 /**

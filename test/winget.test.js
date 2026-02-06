@@ -38,7 +38,7 @@ ${expectedName}  ${expectedId}      ${expectedCurrentVer}         ${expectedAvai
   });
 
   it('filters_out_packages_from_ignore_list', () => {
-    const updatesOutput = `
+    const wingetOutput = `
 Name                          ID                    Version        Available      Source
 -------------------------------------------------------------------------------------------------
 Microsoft Visual Studio Code  Microsoft.VSCode      1.85.0         1.86.0         winget
@@ -49,12 +49,10 @@ Node.js                       OpenJS.NodeJS         18.0.0         18.1.0       
 `;
     const ignoreList = ['Git.Git', 'OpenJS.NodeJS'];
 
-    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(updatesOutput);
+    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(wingetOutput);
 
     const candidates = getUpdateCandidates(KNOWN_LOCALE, ignoreList);
 
-    expect(candidates).toEqual([
-      { name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }
-    ]);
+    expect(candidates).toEqual([{ name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }]);
   });
 });
