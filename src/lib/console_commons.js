@@ -30,8 +30,10 @@ export function moveCursor(current, target, stdout = process.stdout) {
   moveCursorToStartOfLine(stdout);
 }
 
-export async function askPermissionToContinue() {
-  const rl = createInterface({ input, output });
+export async function askPermissionToContinue(options = {}) {
+  const inputStream = options.input ?? input;
+  const outputStream = options.output ?? output;
+  const rl = createInterface({ input: inputStream, output: outputStream });
 
   const answer = await rl.question('Do you want to continue? (y/n): ');
   const userChoice = answer.toLowerCase() === 'y';
