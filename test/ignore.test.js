@@ -59,4 +59,16 @@ describe('loadIgnoreList', () => {
       'Package.Three'
     ]);
   });
+
+  it('filters_out_empty_lines', () => {
+    const ignoreFilePath = 'C:\\Users\\testuser\\.wguignore';
+    const contentWithEmptyLines = 'Package.A\n\n  \n\t\nPackage.B\n';
+    
+    readFileSync.mockReturnValueOnce(contentWithEmptyLines);
+
+    const result = loadIgnoreList(ignoreFilePath);
+
+    expect(result).toEqual(['Package.A', 'Package.B']);
+    expect(result).not.toContain('');
+  });
 });
