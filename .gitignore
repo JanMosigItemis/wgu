@@ -183,5 +183,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-.gtdda/handover_prompt.md
-.gtdda/review.md
+.gtdda/
+!.gtdda/plan.md
+!.gtdda/gtdda_general_ground_rules.md

@@ -2,7 +2,7 @@
 
 ## Ground rules
 
-- You must follow all rules depicted in the file .github/gtdda_general_ground_rules.md.
+- If your context does not contain ground rules, you **MUST ALWAYS** read in the file .gtdda/gtdda_general_ground_rules.md and **ALWAYS** follow the ground rules depicted therein.
 
 ## Target Environment
 
