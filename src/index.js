@@ -91,7 +91,7 @@ export async function main({ stdout = process.stdout, stderr = process.stderr, s
     await runUpdates(selectedIds, async (id, err) => {
       logger.error(`Failed to update package ${id}: ${err.message}`);
       return askPermissionToContinue({ input: stdin, output: stdout });
-    });
+    }, logger);
   } catch (err) {
     stderr.write(`Error: ${err.message}\n`);
     return 1;

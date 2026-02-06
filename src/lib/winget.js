@@ -70,11 +70,12 @@ export function getUpdateCandidates(locale, ignoreList = []) {
  * Runs winget update commands for the provided package IDs
  * @param {string[]} ids - Package IDs to update
  * @param {Function} errorHandler - Optional error handler function (id, err) => Promise<boolean>. Returns true to continue, false to abort.
+ * @param {Object} logger - Logger object with log and error methods
  * @returns {Promise<void>}
  */
-export async function runUpdates(ids, errorHandler = async (_id, _err) => false) {
+export async function runUpdates(ids, errorHandler = async (_id, _err) => false, logger = console) {
   for (const id of ids) {
-    console.log(`Updating package: ${id}`);
+    logger.log(`Updating package: ${id}`);
     // prettier-ignore
     try {
       spawnSyncProcess('winget', [
@@ -85,7 +86,7 @@ export async function runUpdates(ids, errorHandler = async (_id, _err) => false)
         '--accept-source-agreements',
         '--accept-package-agreements'
       ], true);
-      console.log(`Package ${id} updated successfully.`);
+      logger.log(`Package ${id} updated successfully.`);
     } catch (err) {
       // eslint-disable-next-line no-await-in-loop
       if (!(await errorHandler(id, err))) {
