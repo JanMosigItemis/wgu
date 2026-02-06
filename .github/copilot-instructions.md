@@ -10,6 +10,7 @@
 - Use **Node.js LTS** on Windows.
 - Use **ESM** (`"type": "module"`). Do not introduce CommonJS (`require`, `module.exports`).
 - Prefer Node built-ins over dependencies (e.g., `node:fs`, `node:path`, `node:child_process`, `node:readline`, `node:os`).
+- When executing shell commands, use Bash commands only, because we are using a Bash shell although we are working on Windows.
 
 ### Windows + CMD conventions (preferred shell)
 

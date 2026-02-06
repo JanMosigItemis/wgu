@@ -36,4 +36,25 @@ ${expectedName}  ${expectedId}      ${expectedCurrentVer}         ${expectedAvai
 
     expect(candidates).toEqual([{ name: expectedName, id: expectedId, currentVersion: expectedCurrentVer, availableVersion: expectedAvailableVer }]);
   });
+
+  it('filters_out_packages_from_ignore_list', () => {
+    const updatesOutput = `
+Name                          ID                    Version        Available      Source
+-------------------------------------------------------------------------------------------------
+Microsoft Visual Studio Code  Microsoft.VSCode      1.85.0         1.86.0         winget
+Git                           Git.Git               2.40.0         2.41.0         winget
+Node.js                       OpenJS.NodeJS         18.0.0         18.1.0         winget
+3 upgrades available.
+
+`;
+    const ignoreList = ['Git.Git', 'OpenJS.NodeJS'];
+
+    vi.spyOn(system, 'spawnSyncProcess').mockReturnValue(updatesOutput);
+
+    const candidates = getUpdateCandidates(KNOWN_LOCALE, ignoreList);
+
+    expect(candidates).toEqual([
+      { name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }
+    ]);
+  });
 });
