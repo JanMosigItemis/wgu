@@ -5,7 +5,7 @@ import { spawnSyncProcess } from './system.js';
  * Parses winget output to extract package update candidates
  * @param {string} output - Raw winget output string
  * @param {string} locale - The locale to use for parsing winget's localized column headers
- * @param {string[]} ignoreList - Package IDs to exclude from the results
+ * @param {string[]} ignoreList - Package IDs to exclude from the results. Supports plain IDs (e.g., 'Package.Id') and version-specific IDs (e.g., 'Package.Id@1.2.3')
  * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
  */
 export function parseWingetOutput(output, locale, ignoreList = []) {
@@ -68,7 +68,7 @@ export function parseWingetOutput(output, locale, ignoreList = []) {
 /**
  * Retrieves available package updates from winget
  * @param {string} locale - The locale to use for parsing winget's localized column headers
- * @param {string[]} ignoreList - Package IDs to exclude from the results
+ * @param {string[]} ignoreList - Package IDs to exclude from the results. Supports plain IDs (e.g., 'Package.Id') and version-specific IDs (e.g., 'Package.Id@1.2.3')
  * @returns {Array<{name: string, id: string, currentVersion: string, availableVersion: string}>} Array of update candidates
  * @throws {Error} If winget command fails or returns empty output
  */
