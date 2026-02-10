@@ -22,3 +22,4 @@
 [x] When reading from ignore file fails then log error and exit.
 [x] When ignore file contains empty lines then ignore those lines.
 [x] askPermissionToContinue uses provided input and output streams.
+[ ] When an ignore list has been loaded then contained package ids should ONLY be removed from update candidates if the package's available version matches the available version mentioned in the ignore file.

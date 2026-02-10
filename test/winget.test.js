@@ -47,6 +47,27 @@ Node.js                       OpenJS.NodeJS         18.0.0         18.1.0       
 
     expect(candidates).toEqual([{ name: 'Microsoft Visual Studio Code', id: 'Microsoft.VSCode', currentVersion: '1.85.0', availableVersion: '1.86.0' }]);
   });
+
+  it('filters_out_packages_only_when_both_id_and_available_version_match_ignore_list', () => {
+    const wingetOutput = `
+Name                          ID                    Version        Available      Source
+-------------------------------------------------------------------------------------------------
+Package Alpha                 Package.Alpha         1.9.9          2.0.0          winget
+Package Alpha                 Package.Alpha         1.9.9          2.0.1          winget
+Package Beta                  Package.Beta          3.0.0          3.1.0          winget
+Package Gamma                 Package.Gamma         1.4.0          1.5.0          winget
+4 upgrades available.
+
+`;
+    const ignoreList = ['Package.Alpha@2.0.0', 'Package.Beta@3.1.0'];
+
+    const candidates = parseWingetOutput(wingetOutput, KNOWN_LOCALE, ignoreList);
+
+    expect(candidates).toEqual([
+      { name: 'Package Alpha', id: 'Package.Alpha', currentVersion: '1.9.9', availableVersion: '2.0.1' },
+      { name: 'Package Gamma', id: 'Package.Gamma', currentVersion: '1.4.0', availableVersion: '1.5.0' },
+    ]);
+  });
 });
 
 describe('getUpdateCandidates', () => {
