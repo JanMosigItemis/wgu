@@ -58,7 +58,11 @@ export function parseWingetOutput(output, locale, ignoreList = []) {
     }
   }
 
-  return candidates.filter((candidate) => !ignoreList.includes(candidate.id));
+  return candidates.filter((candidate) => {
+    const idMatch = ignoreList.includes(candidate.id);
+    const idVersionMatch = ignoreList.includes(`${candidate.id}@${candidate.availableVersion}`);
+    return !idMatch && !idVersionMatch;
+  });
 }
 
 /**
