@@ -1,5 +1,7 @@
 # win-get-updates
 
+**This repo has been archived. See [fwgu](https://github.com/gigabitzauber/fwgu) for further development.**
+
 Third party CLI frontend for [winget](https://en.wikipedia.org/wiki/Windows_Package_Manager) update runs. It lets you interactively choose which package to install.
 
 <img src="./pics/example.jpg" alt="Example screenshot of win-get-updates in action" width="650px" />
